@@ -3,8 +3,8 @@
 		<@ms.saveButton id="save"/>
 	</@ms.nav>
 	<@ms.panel>
-		<@ms.form name="columnForm" isvalidation=true  action="" method="post" >                                                   
-			<@ms.text name="roleName" label="角色名称:" title="角色名称" value="${roleEntity.roleName?default('')}" width="300" validation={"required":"true","maxlength":"30","data-bv-notempty-message":"请填写标题"}/>
+		<@ms.form name="columnForm" isvalidation=true  >                                                   
+			<@ms.text name="roleName" label="角色名称:" title="角色名称" value="${roleEntity.roleName?default('')}" width="300" validation={"required":"true","maxlength":"30","data-bv-notempty-message":"请填写角色名称"}/>
 			<@ms.formRow label="权限管理:">
 				<div>
 					<table id="modelList" 
@@ -56,6 +56,11 @@
 	})
 	//保存操作
 	$("#save").click(function(){
+		var isValid = $("#columnForm").data("bootstrapValidator").isValid();
+		if(!isValid) {
+			<@ms.notify msg= "数据提交失败，请检查数据格式！" type= "warning" />
+			return;
+		}
 		var roleName = $("input[name=roleName]").val();
 		var roleId = "${roleEntity.roleId?default('')}";
 		var oldRoleName = "${roleEntity.roleName?default('')}";
