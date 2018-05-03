@@ -35,6 +35,7 @@ import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.constant.e.GlobalModelCodelEnum;
 import com.mingsoft.basic.entity.CategoryEntity;
 
+import cn.hutool.core.util.ObjectUtil;
 import net.mingsoft.basic.util.BasicUtil;
 
 /**
@@ -65,12 +66,14 @@ public class CategoryAction extends BaseAction{
 	@ResponseBody
 	public void getParentCategory(@PathVariable int categoryId,HttpServletRequest request, HttpServletResponse response){
 		CategoryEntity category = (CategoryEntity)categoryBiz.getEntity(categoryId);
-		if(category!=null){
+		if(ObjectUtil.isNotNull(category)){
 			CategoryEntity paCategory = (CategoryEntity)categoryBiz.getEntity(category.getCategoryCategoryId());
-			if(paCategory==null){
+			if(ObjectUtil.isNull(paCategory)){
 				this.outJson(response, JSONObject.toJSONString(category));
+			}else{
+				this.outJson(response, JSONObject.toJSONString(paCategory));
 			}
-			this.outJson(response, JSONObject.toJSONString(paCategory));
+			
 		}
 	}
 	
