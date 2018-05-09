@@ -184,7 +184,7 @@ public class AppEntity extends BaseEntity {
 	 * 获取网站域名
 	 */
 	public String getAppUrl() {
-		return appUrl.replaceAll("\\s","");
+		return appUrl.replaceAll(" ","");
 	}
 	
 	/**
