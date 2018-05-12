@@ -18,37 +18,63 @@
 		<result column="MODEL_ISMENU" property="modelIsMenu" /><!--模块是否是菜单 -->
 		<result column="MODEL_PARENT_IDS" property="modelParentIds" /><!--模块是否是菜单 -->
 	</resultMap>
+	<sql id="insertColumns">
+		<if test="modelTitle != null and modelTitle != ''">MODEL_TITLE,</if>
+	    <if test="modelCode != null and modelCode != ''">MODEL_CODE,</if>
+	    <if test="modelModelId &gt; 0">MODEL_MODELID,</if>
+	    <if test="modelUrl != null and modelUrl != ''">MODEL_URL,</if>
+	    <if test="modelDatetime != null">MODEL_DATETIME,</if>
+	    <if test="modelIcon != null and modelIcon != ''">MODEL_ICON,</if>
+	    <if test="modelManagerId != null">MODEL_MODELMANAGERID,</if>
+	    <if test="modelSort != null">MODEL_SORT,</if>
+	    <if test="modelIsMenu != null">MODEL_ISMENU,</if>
+	    <if test="modelParentIds != null and modelParentIds != ''">MODEL_PARENT_IDS,</if>
+	</sql>
 	
-	<!--保存-->	
+	<sql id="insertValues">
+		<if test="modelTitle != null and modelTitle != ''">#{modelTitle},</if>
+	    <if test="modelCode != null and modelCode != ''">#{modelCode},</if>
+	    <if test="modelModelId &gt; 0">#{modelModelId},</if>
+	    <if test="modelUrl != null and modelUrl != ''">#{modelUrl},</if>
+	    <if test="modelDatetime != null">#{modelDatetime},</if>
+	    <if test="modelIcon != null and modelIcon != ''">#{modelIcon},</if>
+	    <if test="modelManagerId != null">#{modelManagerId},</if>
+	    <if test="modelSort != null">#{modelSort},</if>
+	    <if test="modelIsMenu != null">#{modelIsMenu},</if>
+	    <if test="modelParentIds != null and modelParentIds != ''">#{modelParentIds},</if>
+	</sql>
+	<!-- mysql添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="modelId"
-		parameterType="com.mingsoft.basic.entity.ModelEntity" >
+		parameterType="com.mingsoft.basic.entity.ModelEntity" databaseId="mysql">
 		insert into model
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="modelTitle != null and modelTitle != ''">MODEL_TITLE,</if>
-			<if test="modelCode != null and modelCode != ''">MODEL_CODE,</if>
-			<if test="modelModelId &gt; 0">MODEL_MODELID,</if>
-			<if test="modelUrl != null and modelUrl != ''">MODEL_URL,</if>
-			<if test="modelDatetime != null">MODEL_DATETIME,</if>
-			<if test="modelIcon != null and modelIcon != ''">MODEL_ICON,</if>
-			<if test="modelManagerId != null">MODEL_MODELMANAGERID,</if>
-			<if test="modelSort != null">MODEL_SORT,</if>
-			<if test="modelIsMenu != null">MODEL_ISMENU,</if>
-			<if test="modelParentIds != null and modelParentIds != ''">MODEL_PARENT_IDS,</if>
+			<include refid="insertColumns"></include>
 		</trim>
+		<!-- 注入控制层字段 -->
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="modelTitle != null and modelTitle != ''">#{modelTitle},</if>
-			<if test="modelCode != null and modelCode != ''">#{modelCode},</if>
-			<if test="modelModelId &gt; 0">#{modelModelId},</if>
-			<if test="modelUrl != null and modelUrl != ''">#{modelUrl},</if>
-			<if test="modelDatetime != null">#{modelDatetime},</if>
-			<if test="modelIcon != null and modelIcon != ''">#{modelIcon},</if>
-			<if test="modelManagerId != null">#{modelManagerId},</if>
-			<if test="modelSort != null">#{modelSort},</if>
-			<if test="modelIsMenu != null">#{modelIsMenu},</if>
-			<if test="modelParentIds != null and modelParentIds != ''">#{modelParentIds},</if>
+			<include refid="insertValues"></include>
 		</trim>
 	</insert>
-	<!-- 新增结束 -->
+	<!-- mysql添加结束 -->
+	<!-- oracle添加开始 -->
+	<insert id="saveEntity" useGeneratedKeys="false"
+		parameterType="com.mingsoft.basic.entity.ModelEntity" databaseId="oracle">
+		<selectKey resultType="Integer"  keyProperty="modelId" order="BEFORE">
+			select seq_model_id.nextval as modelId from dual
+		</selectKey>
+		insert into model
+		<!-- 添加表字段 -->
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			MODEL_ID,
+			<include refid="insertColumns"></include>
+		</trim>
+		<!-- 注入控制层字段 -->
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{modelId},
+			<include refid="insertValues"></include>
+		</trim>
+	</insert>
+	<!-- oracle添加结束 -->
 
 	<!-- 查询 -->
 	<select id="queryAll" resultMap="resultMap">
@@ -64,7 +90,7 @@
 	<select id="queryByPage" resultMap="resultMap" parameterType="java.util.Map">
 		select
 		<include refid="column_list" />
-		from model order by model_id desc limit ${pageNo*pageSize},#{pageSize}
+		from model order by model_id desc 
 	</select>
 	<!-- 查询带分页结束 -->
 
@@ -133,7 +159,7 @@
 
    <!-- 根据应用编号与模块编号查处通用的模块信息 -->
 	<select id="getModel"   resultMap="resultMap" >
-		select MODEL_ID,MODEL_TITLE,MODEL_CODE,MODEL_MODELID,MODEL_URL,MODEL_DATETIME,MODEL_ICON,MODEL_MODELMANAGERID from  model where substring(model_code,3,2)=#{modelCodeRegex} and (model_modelid = (select model_modelid from model where model_id=#{modelId}) or model_modelid = (select model_id from model where model_id=#{modelId}));
+		select MODEL_ID,MODEL_TITLE,MODEL_CODE,MODEL_MODELID,MODEL_URL,MODEL_DATETIME,MODEL_ICON,MODEL_MODELMANAGERID from  model where substring(model_code,3,2)=#{modelCodeRegex} and (model_modelid = (select model_modelid from model where model_id=#{modelId}) or model_modelid = (select model_id from model where model_id=#{modelId}))
 	</select>
 	<!--条件查询-->	
 	<select id="query" resultMap="resultMap">

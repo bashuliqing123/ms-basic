@@ -45,27 +45,54 @@
 	</select>
 	<!-- 查询此时登录的管理员的子管理员列表开始  -->
 	
-	<!-- 增加管理员开始 -->
-	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity"  useGeneratedKeys="true" keyProperty="managerId">
+	<sql id="insertColumns">
+		<if test="managerName != null and managerName != ''">MANAGER_NAME,</if>
+		<if test="managerNickName != null and managerNickName != ''">MANAGER_NICKNAME,</if>
+		<if test="managerPassword != null and managerPassword != ''">MANAGER_PASSWORD,</if>
+		<if test="managerRoleID &gt; 0">MANAGER_ROLEID,</if>
+		<if test="managerPeopleID &gt; 0">MANAGER_PEOPLEID,</if>
+		<if test="managerTime != null">MANAGER_TIME,</if>
+	</sql>
+	
+	<sql id="insertValues">
+		<if test="managerName != null and managerName != ''">#{managerName},</if>
+		<if test="managerNickName != null and managerNickName != ''">#{managerNickName},</if>
+		<if test="managerPassword != null and managerPassword != ''">#{managerPassword},</if>
+		<if test="managerRoleID &gt; 0">#{managerRoleID},</if>
+		<if test="managerPeopleID &gt; 0">#{managerPeopleID},</if>
+		<if test="managerTime != null">#{managerTime},</if>
+	</sql>
+	
+	<!-- mysql增加管理员开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity"  useGeneratedKeys="true" keyProperty="managerId" databaseId="mysql">
 		insert into manager
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="managerName != null and managerName != ''">MANAGER_NAME,</if>
-			<if test="managerNickName != null and managerNickName != ''">MANAGER_NICKNAME,</if>
-			<if test="managerPassword != null and managerPassword != ''">MANAGER_PASSWORD,</if>
-			<if test="managerRoleID &gt; 0">MANAGER_ROLEID,</if>
-			<if test="managerPeopleID &gt; 0">MANAGER_PEOPLEID,</if>
-			<if test="managerTime != null">MANAGER_TIME,</if>
+			<include refid="insertColumns"></include>
 		</trim>
+		<!-- 注入控制层字段 -->
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="managerName != null and managerName != ''">#{managerName},</if>
-			<if test="managerNickName != null and managerNickName != ''">#{managerNickName},</if>
-			<if test="managerPassword != null and managerPassword != ''">#{managerPassword},</if>
-			<if test="managerRoleID &gt; 0">#{managerRoleID},</if>
-			<if test="managerPeopleID &gt; 0">#{managerPeopleID},</if>
-			<if test="managerTime != null">#{managerTime},</if>
+			<include refid="insertValues"></include>
 		</trim>
 	</insert>
-	<!-- 增加管理员结束 -->
+	<!-- mysql增加管理员结束 -->
+	
+	<!-- oracle增加管理员开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity"  useGeneratedKeys="false" databaseId="oracle">
+		<selectKey resultType="Integer"  keyProperty="managerId" order="BEFORE">
+			select seq_manager_id.nextval as managerId from dual
+		</selectKey>
+		insert into manager
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			MANAGER_ID,
+			<include refid="insertColumns"></include>
+		</trim>
+		<!-- 注入控制层字段 -->
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{managerId},
+			<include refid="insertValues"></include>
+		</trim>
+	</insert>
+	<!-- oracle增加管理员结束 -->
 	
 	<!-- 删除管理员开始 -->
 	<delete id="deleteEntity" parameterType="int">
@@ -86,7 +113,7 @@
 	<select id="getEntity" resultMap="resultMap" parameterType="int">
 		select 
 			<include refid="column_list"/>
-		  		from manager where MANAGER_ID=#{managerId};
+		  		from manager where MANAGER_ID=#{managerId}
 	</select>
 	<!-- 查询管理员结束 -->
 	
@@ -102,7 +129,6 @@
 			<if test="managerTime != null"> and MANAGER_TIME=#{managerTime} </if>				
 			<if test="managerSystemSkinId &gt; 0"> and MANAGER_SYSTEM_SKIN_ID=#{managerSystemSkinId} </if>				
 		</where>
-		limit 0,1
 	</select>
 	
 	<!-- 更新管理员开始 -->

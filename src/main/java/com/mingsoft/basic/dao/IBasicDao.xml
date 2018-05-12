@@ -18,43 +18,65 @@
 		<result column="BASIC_CATEGORYID" property="basicCategoryId" />
 		<result column="BASIC_APPID" property="basicAppId" />
 	</resultMap>
-
-	<!-- 新增开始 -->
-	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="basicId"
-		parameterType="com.mingsoft.base.entity.BaseEntity">
+	<sql id="insertColumns">
+	    <if test="basicTitle != null">basic_title,</if>
+		<if test="basicDescription != null">basic_description,</if>
+		<if test="basicThumbnails != null">basic_thumbnails,</if>
+		<if test="basicHit != null">basic_hit,</if>
+		<if test="basicCategoryId != null and basicCategoryId &gt; 0">BASIC_CATEGORYID,</if>
+		<if test="basicPeopleId != null">BASIC_PEOPLEID,</if>
+		<if test="basicDateTime != null">BASIC_Datetime,</if>
+		<if test="basicUpdateTime != null">BASIC_updatetime,</if>
+		<if test="basicAppId != null">BASIC_APPID,</if>
+		<if test="basicSort != null">BASIC_SORT,</if>
+		<if test="basicType != null">BASIC_TYPE,</if>
+		<if test="basicModelId != null">BASIC_MODELID,</if>
+	</sql>
+	<sql id="insertValues">
+	    <if test="basicTitle != null">#{basicTitle},</if>
+		<if test="basicDescription != null">#{basicDescription},</if>
+		<if test="basicThumbnails != null">#{basicThumbnails},</if>
+		<if test="basicHit != null">#{basicHit},</if>
+		<if test="basicCategoryId != null and basicCategoryId &gt; 0">#{basicCategoryId},</if>
+		<if test="basicPeopleId != null">#{basicPeopleId},</if>
+		<if test="basicDateTime != null">#{basicDateTime},</if>
+		<if test="basicUpdateTime != null">#{basicUpdateTime},</if>
+		<if test="basicAppId != null">#{basicAppId},</if>
+		<if test="basicSort != null">#{basicSort},</if>
+		<if test="basicType != null">#{basicType},</if>
+		<if test="basicModelId != null">#{basicModelId},</if>
+	</sql>
+	<!-- mysql添加开始 -->
+	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="basicId" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="mysql">
 		insert into basic
+		<!-- 添加表字段 -->
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="basicTitle != null">basic_title,</if>
-			<if test="basicDescription != null">basic_description,</if>
-			<if test="basicThumbnails != null">basic_thumbnails,</if>
-			<if test="basicHit != null">basic_hit,</if>
-			<if test="basicCategoryId != null and basicCategoryId &gt; 0">BASIC_CATEGORYID,</if>
-			<if test="basicPeopleId != null">BASIC_PEOPLEID,</if>
-			<if test="basicDateTime != null">BASIC_Datetime,</if>
-			<if test="basicUpdateTime != null">BASIC_updatetime,</if>
-			<if test="basicAppId != null">BASIC_APPID,</if>
-			<if test="basicSort != null">BASIC_SORT,</if>
-			<if test="basicType != null">BASIC_TYPE,</if>
-			<if test="basicModelId != null">BASIC_MODELID,</if>
-			
+			<include refid="insertColumns"></include>
 		</trim>
+		<!-- 注入控制层字段 -->
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="basicTitle != null">#{basicTitle},</if>
-			<if test="basicDescription != null">#{basicDescription},</if>
-			<if test="basicThumbnails != null">#{basicThumbnails},</if>
-			<if test="basicHit != null">#{basicHit},</if>
-			<if test="basicCategoryId != null and basicCategoryId &gt; 0">#{basicCategoryId},</if>
-			<if test="basicPeopleId != null">#{basicPeopleId},</if>
-			<if test="basicDateTime != null">#{basicDateTime},</if>
-			<if test="basicUpdateTime != null">#{basicUpdateTime},</if>
-			<if test="basicAppId != null">#{basicAppId},</if>
-			<if test="basicSort != null">#{basicSort},</if>
-			<if test="basicType != null">#{basicType},</if>
-			<if test="basicModelId != null">#{basicModelId},</if>
+			<include refid="insertValues"></include>
 		</trim>
 	</insert>
-	<!-- 新增结束 -->
-
+	<!-- mysql添加结束 -->
+	<!-- oracle添加 开始 -->
+	<insert id="saveEntity" useGeneratedKeys="false" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="oracle">
+		<selectKey resultType="Integer"  keyProperty="basicId" order="BEFORE">
+			select seq_basic_id.nextval as basicId from dual
+		</selectKey>
+		insert into basic
+		<!-- 添加表字段 -->
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			BASIC_ID,
+			<include refid="insertColumns"></include>
+		</trim>
+		<!-- 注入控制层字段 -->
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{basicId},
+			<include refid="insertValues"></include>
+		</trim>
+	</insert>
+	<!-- oracle添加结束 -->
 	<!-- 更新开始 -->
 	<update id="updateEntity" parameterType="com.mingsoft.base.entity.BaseEntity">
 		update basic
@@ -95,7 +117,7 @@
 	<!-- 根据ID查询结束 -->
 
 	<!-- 根据ID查询开始 -->
-	<select id="query" resultMap="resultMap" parameterType="int">
+	<select id="query" resultMap="resultMap" parameterType="int" databaseId="mysql">
 		select
 		<include refid="column_list" />
 		from basic
@@ -122,12 +144,40 @@
 		<if test=" orderField == null">
 			order by basic_id desc
 		</if>		
-		<if test=" begin !=null ">
-			limit #{begin}
+		
+
+	</select>
+	<!-- 根据ID查询结束 -->
+	
+	<!-- 根据ID查询开始 -->
+	<select id="query" resultMap="resultMap" parameterType="int" databaseId="oracle">
+		select
+		<include refid="column_list" />
+		from basic
+		<where>
+			<if test=" appId !=null">
+				 and basic_appid=#{appId}
+			</if>
+			<if test=" categoryId > 0">
+				 and basic_categoryid=#{categoryId}
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<if test=" keyWord !=null ">
+				and basic_title like '%'||#{ keyWord}||'%'
+			</if>			
+		</where>
+		<if test=" orderField != null">
+			order by #{orderField}
+			<if  test=" ad != null">
+				#{ad}
+			</if>
 		</if>
-		<if test=" end !=null ">
-			,#{end}
-		</if>
+		<if test=" orderField == null">
+			order by basic_id desc
+		</if>		
+		
 
 	</select>
 	<!-- 根据ID查询结束 -->
