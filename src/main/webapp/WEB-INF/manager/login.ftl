@@ -20,14 +20,14 @@
 </style>
 <body>
         <div id="mcms-login">
-            <img src="http://localhost:8080/ms-mcms/static/skin/manager/4.6.0/images/pic.png" class="login-images login-float" />
+            <img src="${static}/skin/manager/${manager_ui}/images/pic.png" class="login-images login-float" />
             <div class="login-form-container login-float">
                 <div class="login-title">
                     <span class="login-chinese-title">账号登录 /</span>
                     <span class="login-english-title">User login</span>
                 </div>
 				<div class="ms-login-error-text">
-					<img src="http://localhost:8080/ms-mcms/static/skin/manager/4.6.0/images/error.png" v-show="errorText != ''" />
+					<img src="${static}/skin/manager/${manager_ui}/images/error.png" v-show="errorText != ''" />
 					<span v-text="errorText" v-show="errorText != ''"></span>
 				</div>
                 <form class="form-horizontal" id="loginForm" action="${managerPath}/checkLogin.do">
