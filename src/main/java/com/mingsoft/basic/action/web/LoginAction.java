@@ -161,6 +161,14 @@ public class LoginAction extends BaseAction {
 		ManagerEntity newManager = new ManagerEntity();
 		newManager.setManagerName(manager.getManagerName());
 		ManagerEntity _manager = (ManagerEntity) managerBiz.getEntity(newManager);
+		if (StringUtil.isBlank(request.getAttribute("rand_code"))){
+			this.outJson(response, ModelCode.ADMIN_LOGIN, false, this.getResString("err.codeEmpty"));
+		}
+		if (!(checkRandCode(request))) {
+			 outJson(response, null, false,
+					getResString("err.error", new String[] { getResString("rand.code") }));
+			 return;
+		}
 		if (_manager == null || StringUtil.isBlank(manager.getManagerName())) {
 			// 系统不存在此用户
 			this.outJson(response, ModelCode.ADMIN_LOGIN, false, this.getResString("err.nameEmpty"));
