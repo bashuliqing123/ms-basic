@@ -11,35 +11,59 @@
 		<result column="APP_ID" property="appId"/><!-- 将实体的appId属性与表的appId字段对接 -->
 	</resultMap>
 	<!-- 将实体属性与表字段对接结束 -->
+	<sql id="insertColumns">
+		<if test="roleName != null">ROLE_NAME,</if>
+		<if test="roleManagerId != null">ROLE_MANAGERID,</if>
+		<if test="appId !=null">APP_ID</if>
+	</sql>
 	
-	<!-- 新增角色开始 -->
+	<sql id="insertValues">
+		<if test="roleName != null">#{roleName},</if>
+		<if test="roleManagerId != null">#{roleManagerId},</if>
+		<if test="appId != null">#{appId}</if>
+	</sql>
+	<!-- mysql新增角色开始 -->
 	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.RoleEntity" useGeneratedKeys="true" keyProperty="roleId">
 		insert into role
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="roleName != null">ROLE_NAME,</if>
-			<if test="roleManagerId != null">ROLE_MANAGERID,</if>
-			<if test="appId !=null">APP_ID</if>
+			<include refid="insertColumns"></include>
 		</trim>
+		<!-- 注入控制层字段 -->
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="roleName != null">#{roleName},</if>
-			<if test="roleManagerId != null">#{roleManagerId},</if>
-			<if test="appId != null">#{appId}</if>
+			<include refid="insertValues"></include>
 		</trim>
 	</insert>
-	<!-- 新增角色结束 -->
+	<!-- mysql新增角色结束 -->
+	
+	<!-- oracle添加 开始 -->
+	<insert id="saveEntity" useGeneratedKeys="false" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="oracle">
+		<selectKey resultType="Integer"  keyProperty="roleId" order="BEFORE">
+			select seq_rolec_id.nextval as roleId from dual
+		</selectKey>
+		insert into role
+		<!-- 添加表字段 -->
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ROLE_ID,
+			<include refid="insertColumns"></include>
+		</trim>
+		<!-- 注入控制层字段 -->
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{roleId},
+			<include refid="insertValues"></include>
+		</trim>
+	</insert>
+	<!-- oracle添加结束 -->
 	
 	<!-- 删除角色开始 -->
 	<delete id="deleteEntity" parameterType="int">
 		delete  r,rm
-		from role r left join role_model rm on r.ROLE_ID=rm.RM_ROLEID left join model m on m.MODEL_ID=rm.RM_MODELID where r.ROLE_ID=#{roleId};
+		from role r left join role_model rm on r.ROLE_ID=rm.RM_ROLEID left join model m on m.MODEL_ID=rm.RM_MODELID where r.ROLE_ID=#{roleId}
 	</delete>
 	<!-- 删除角色结束 -->
 	
 	<!-- 根据角色ID查询角色开始 -->
 	<select id="getEntity" resultMap="resultMap" parameterType="int">
-		select 
-			ROLE_ID,ROLE_NAME,ROLE_MANAGERID,APP_ID
-		  		from role where ROLE_ID=#{roleId};
+		select ROLE_ID,ROLE_NAME,ROLE_MANAGERID,APP_ID from role where ROLE_ID=#{roleId}
 	</select>
 	<!-- 根据角色ID查询角色结束 -->
 	
@@ -60,10 +84,19 @@
 		select * from role
 	</select>
 	<!--条件查询-->	
-	<select id="query" resultMap="resultMap">
+	<select id="query" resultMap="resultMap" databaseId="mysql">
 		select * from role  
 		<where>
 			<if test="roleName != null and roleName != ''">and ROLE_NAME like CONCAT('%',#{roleName},'%') </if>			
+			<if test="roleManagerId != null"> and ROLE_MANAGERID=#{roleManagerId} </if>	
+		</where>		
+		order by ROLE_ID desc
+	</select>
+	<!--条件查询-->	
+	<select id="query" resultMap="resultMap" databaseId="oracle">
+		select * from role  
+		<where>
+			<if test="roleName != null and roleName != ''">and ROLE_NAME like '%'||#{roleName}||'%' </if>			
 			<if test="roleManagerId != null"> and ROLE_MANAGERID=#{roleManagerId} </if>	
 		</where>		
 		order by ROLE_ID desc
@@ -84,6 +117,5 @@
 			<if test="roleName != null and roleName != ''"> and ROLE_NAME=#{roleName} </if>				
 			<if test="roleManagerId &gt; 0"> and ROLE_MANAGERID=#{roleManagerId} </if>				
 		</where>
-		limit 0,1
 	</select>	
 </mapper>

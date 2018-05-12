@@ -49,10 +49,16 @@
 	</select>
 
 	<!-- 根据域名查找站点实体 -->
-	<select id="getByUrl" resultMap="resultMap" parameterType="String">
+	<select id="getByUrl" resultMap="resultMap" parameterType="String" databaseId="mysql">
 		select *
 		from app
 		where APP_URL like CONCAT('%',#{appUrl},'%') limit 0,1
+	</select>
+		<!-- 根据域名查找站点实体 -->
+	<select id="getByUrl" resultMap="resultMap" parameterType="String" databaseId="oracle">
+		select *
+		from app
+		where APP_URL like '%'||#{appUrl}||'%' and rownum = 1
 	</select>
 
 	<!-- 根据ID查询结束 -->

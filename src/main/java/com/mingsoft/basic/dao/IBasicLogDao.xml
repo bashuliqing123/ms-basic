@@ -37,7 +37,7 @@
 	<select id="queryByPage" resultMap="resultMap">
 		select * from basic_log
 		bl_id
-		desc limit ${pageNo*pageSize},#{pageSize}
+		desc 
 	</select>
 
 	<select id="queryCount" resultType="int">
@@ -57,7 +57,7 @@
 			</if>
 		</if>
 		order by
-		bl_id desc limit ${pageNo*pageSize},#{pageSize}
+		bl_id desc 
 	</select>
 
 	<select id="count" resultType="int">

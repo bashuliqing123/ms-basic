@@ -108,7 +108,7 @@
 	<select id="getEntity" resultMap="resultMap" parameterType="int">
 		select
 		<include refid="column_list"/>
-		from basic_column co left join category ca on co.column_category_id=ca.category_id where co.column_category_id=#{categoryId};
+		from basic_column co left join category ca on co.column_category_id=ca.category_id where co.column_category_id=#{categoryId}
 	</select>
 	<!-- 根据ID查询结束 -->
 	
@@ -117,7 +117,7 @@
 	<select id="queryColumnListByWebsiteId" resultMap="resultMap" >
 		select
 		<include refid="column_list"/>
-		from basic_column co left join category ca on ca.category_id=co.column_category_id where ca.category_appid=#{appId} <include refid="where_modelcode"/>;
+		from basic_column co left join category ca on ca.category_id=co.column_category_id where ca.category_appid=#{appId} <include refid="where_modelcode"/>
 	</select>
 	<!-- 根据管站点ID查询栏目集结束 -->
 
@@ -136,15 +136,15 @@
 		  and ca.category_categoryid is null or ca.category_categoryid=#{categoryCategoryId}
 		</if> 
 		order by ca.CATEGORY_SORT desc,ca.category_id desc
-		<if test="size!=null">
+		<!--<if test="size!=null">
 			limit 0,#{size}
-		</if>
+		</if> -->
 	</select>
 	<!-- 根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合结束 -->
 	
 	<!-- 根据栏目id查询其子栏目Id的集合开始 -->
 	<select id="queryColumnChildIdList" resultType="int" >
-		select co.column_category_id from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_categoryid=#{categoryId} and ca.category_appid = #{appId} <include refid="where_modelcode"/>;
+		select co.column_category_id from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_categoryid=#{categoryId} and ca.category_appid = #{appId} <include refid="where_modelcode"/>
 	</select>
 	<!-- 根据栏目id查询其子栏目Id的集合结束 -->
 	
@@ -153,7 +153,7 @@
 	<select id="queryColumnChildListCountByWebsiteId" resultType="int" >
 		select
 		count(*)
-		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_categoryid=#{categoryCategoryId} and ca.category_appid = #{appId} <include refid="where_modelcode"/>;
+		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_categoryid=#{categoryCategoryId} and ca.category_appid = #{appId} <include refid="where_modelcode"/>
 	</select>
 	<!-- 根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合数目统计结束 -->
 	
