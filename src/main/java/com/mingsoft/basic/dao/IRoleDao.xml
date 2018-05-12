@@ -83,7 +83,7 @@
 	<select id="queryAll" resultMap="resultMap">
 		select * from role
 	</select>
-	<!--条件查询-->	
+	<!--mysql条件查询-->	
 	<select id="query" resultMap="resultMap" databaseId="mysql">
 		select * from role  
 		<where>
@@ -92,7 +92,7 @@
 		</where>		
 		order by ROLE_ID desc
 	</select>
-	<!--条件查询-->	
+	<!--oracle条件查询-->	
 	<select id="query" resultMap="resultMap" databaseId="oracle">
 		select * from role  
 		<where>
@@ -101,7 +101,15 @@
 		</where>		
 		order by ROLE_ID desc
 	</select>
-	<!-- 查询所有的角色 -->
+	<!--sqlServer条件查询-->	
+	<select id="query" resultMap="resultMap" databaseId="sqlServer">
+		select * from role  
+		<where>
+			<if test="roleName != null and roleName != ''">and ROLE_NAME like '%'+#{roleName}+'%' </if>			
+			<if test="roleManagerId != null"> and ROLE_MANAGERID=#{roleManagerId} </if>	
+		</where>		
+		order by ROLE_ID desc
+	</select>
 	<!--批量删除-->	
 	<delete id="delete" >
 		delete from role

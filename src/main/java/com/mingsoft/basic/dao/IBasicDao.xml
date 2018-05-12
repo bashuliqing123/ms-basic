@@ -46,9 +46,8 @@
 		<if test="basicType != null">#{basicType},</if>
 		<if test="basicModelId != null">#{basicModelId},</if>
 	</sql>
-	<!-- mysql添加开始 -->
-	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="basicId" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="mysql">
-		insert into basic
+	<sql id="mysqlAndSqlServer">
+	    insert into basic
 		<!-- 添加表字段 -->
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<include refid="insertColumns"></include>
@@ -57,8 +56,17 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<include refid="insertValues"></include>
 		</trim>
+	</sql>
+	<!-- mysql添加开始 -->
+	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="basicId" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="mysql">
+		<include refid="mysqlAndSqlServer"></include>
 	</insert>
 	<!-- mysql添加结束 -->
+	<!-- sqlServer添加开始 -->
+	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="basicId" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="sqlServer">
+		<include refid="mysqlAndSqlServer"></include>
+	</insert>
+	<!-- sqlServer添加结束 -->
 	<!-- oracle添加 开始 -->
 	<insert id="saveEntity" useGeneratedKeys="false" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="oracle">
 		<selectKey resultType="Integer"  keyProperty="basicId" order="BEFORE">
@@ -115,72 +123,72 @@
 		from basic where basic_id=#{basicId}
 	</select>
 	<!-- 根据ID查询结束 -->
-
-	<!-- 根据ID查询开始 -->
+	
+	<sql id="whereSqlCondition">
+		<if test=" appId !=null">
+			and basic_appid=#{appId}
+		</if>
+		<if test=" categoryId > 0">
+			and basic_categoryid=#{categoryId}
+		</if>
+		<if test="modelId != null">
+			and basic_modelId = #{modelId}
+		</if>
+	</sql>
+	<sql id="orderBySql">
+		<if test=" orderField != null">
+			order by #{orderField}
+			<if  test=" ad != null">
+				#{ad}
+			</if>
+		</if>
+		<if test=" orderField == null">
+			order by basic_id desc
+		</if>
+	</sql>
+	<!-- mysql根据ID查询开始 -->
 	<select id="query" resultMap="resultMap" parameterType="int" databaseId="mysql">
 		select
 		<include refid="column_list" />
 		from basic
 		<where>
-			<if test=" appId !=null">
-				 and basic_appid=#{appId}
-			</if>
-			<if test=" categoryId > 0">
-				 and basic_categoryid=#{categoryId}
-			</if>
-			<if test="modelId != null">
-				and basic_modelId = #{modelId}
-			</if>
+			<include refid="whereSqlCondition"></include>
 			<if test=" keyWord !=null ">
 				and basic_title like CONCAT('%',#{ keyWord},'%')
 			</if>			
 		</where>
-		<if test=" orderField != null">
-			order by #{orderField}
-			<if  test=" ad != null">
-				#{ad}
-			</if>
-		</if>
-		<if test=" orderField == null">
-			order by basic_id desc
-		</if>		
-		
-
+			<include refid="orderBySql"></include>	
 	</select>
-	<!-- 根据ID查询结束 -->
+	<!-- mysql根据ID查询结束 -->
 	
-	<!-- 根据ID查询开始 -->
+	<!-- oracle根据ID查询开始 -->
 	<select id="query" resultMap="resultMap" parameterType="int" databaseId="oracle">
 		select
 		<include refid="column_list" />
 		from basic
 		<where>
-			<if test=" appId !=null">
-				 and basic_appid=#{appId}
-			</if>
-			<if test=" categoryId > 0">
-				 and basic_categoryid=#{categoryId}
-			</if>
-			<if test="modelId != null">
-				and basic_modelId = #{modelId}
-			</if>
+			<include refid="whereSqlCondition"></include>
 			<if test=" keyWord !=null ">
 				and basic_title like '%'||#{ keyWord}||'%'
 			</if>			
 		</where>
-		<if test=" orderField != null">
-			order by #{orderField}
-			<if  test=" ad != null">
-				#{ad}
-			</if>
-		</if>
-		<if test=" orderField == null">
-			order by basic_id desc
-		</if>		
-		
-
+		<include refid="orderBySql"></include>	
 	</select>
-	<!-- 根据ID查询结束 -->
+	<!-- oracle根据ID查询结束 -->
+	<!-- sqlServer根据ID查询开始 -->
+	<select id="query" resultMap="resultMap" parameterType="int" databaseId="sqlServer">
+		select
+		<include refid="column_list" />
+		from basic
+		<where>
+			<include refid="whereSqlCondition"></include>
+			<if test=" keyWord !=null ">
+				and basic_title like '%'+#{ keyWord}+'%'
+			</if>			
+		</where>
+		<include refid="orderBySql"></include>	
+	</select>
+	<!-- sqlServer根据ID查询结束 -->
 	
 
 	<!-- 更新文章点击次数 -->
