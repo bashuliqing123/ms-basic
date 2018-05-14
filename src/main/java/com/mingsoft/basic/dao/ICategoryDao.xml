@@ -53,7 +53,7 @@
 	        <if test="createDate != null">create_date,</if>
 	</sql>
 	<sql id="insertValues">
-		<if test="categoryTitle != null">#{categoryTitle},</if>
+		    <if test="categoryTitle != null">#{categoryTitle},</if>
 	        <if test="categorySort &gt; -1">#{categorySort},</if>
 	        <if test="categoryDateTime != null">#{categoryDateTime},</if>
 	        <if test="categoryManagerId &gt; 0">#{categoryManagerId},</if>
@@ -256,10 +256,7 @@
 	<sql id="queryWhereCategoryId" databaseId="mysql">
 		find_in_set('${categoryId}',CATEGORY_PARENT_ID)
 	</sql>
-	<sql id="queryWhereCategoryId" databaseId="oracle">
-		'${categoryId}' IN CATEGORY_PARENT_ID
-	</sql>
-	<sql id="queryWhereCategoryId" databaseId="sqlServer">
+	<sql id="queryWhereCategoryId" >
 		'${categoryId}' IN CATEGORY_PARENT_ID
 	</sql>
 	<!-- 模糊查询开始 -->
