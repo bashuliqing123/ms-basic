@@ -23,8 +23,9 @@
 		<if test="appId != null">#{appId}</if>
 	</sql>
 	
-	<sql id="mysqlAndSqlServer">
-	    insert into role
+	<!-- mysql或sqlServer新增角色开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.RoleEntity" useGeneratedKeys="true" keyProperty="roleId" >
+	       insert into role
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<include refid="insertColumns"></include>
 		</trim>
@@ -32,17 +33,8 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<include refid="insertValues"></include>
 		</trim>
-	</sql>
-	<!-- mysql新增角色开始 -->
-	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.RoleEntity" useGeneratedKeys="true" keyProperty="roleId" databaseId="mysql">
-		 <include refid="mysqlAndSqlServer"></include>
 	</insert>
-	<!-- mysql新增角色结束 -->
-	<!-- sqlServer新增角色开始 -->
-	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.RoleEntity" useGeneratedKeys="true" keyProperty="roleId" databaseId="sqlServer">
-	    <include refid="mysqlAndSqlServer"></include>
-	</insert>
-	<!-- sqlServer新增角色结束 -->
+	<!-- mysql或sqlServer新增角色结束 -->
 	
 	<!-- oracle添加 开始 -->
 	<insert id="saveEntity" useGeneratedKeys="false" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="oracle">
@@ -123,7 +115,7 @@
 		</where>
 	</delete>
 	<!--根据实体获取-->
-	<sql id="sqlWhere">
+	<sql id="queryRoleWhere">
 	 	<where>
 			<if test="roleName != null and roleName != ''"> and ROLE_NAME=#{roleName} </if>				
 			<if test="roleManagerId &gt; 0"> and ROLE_MANAGERID=#{roleManagerId} </if>				
@@ -132,19 +124,19 @@
 	<!--mysql根据实体获取-->
 	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="mysql">
 		select * from role 
-		<include refid="sqlWhere"></include>
+		<include refid="queryRoleWhere"></include>
 		limit 0,1
 	</select>
 	<!--oracle根据实体获取-->
 	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="oracle">
 		select * from role 
-		<include refid="sqlWhere"></include>
+		<include refid="queryRoleWhere"></include>
 		where rownum = 1
 	</select>
 		<!--sqlServer根据实体获取-->
 	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="sqlServer">
 		select top(1) * from role 
-		<include refid="sqlWhere"></include>
+		<include refid="queryRoleWhere"></include>
 	</select>
 	
 </mapper>
