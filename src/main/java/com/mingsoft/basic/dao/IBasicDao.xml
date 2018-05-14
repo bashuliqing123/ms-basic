@@ -116,19 +116,35 @@
 	</select>
 	<!-- 根据ID查询结束 -->
 	
-	<sql id="queryWhereValues">
-		<if test=" appId !=null">
-			and basic_appid=#{appId}
-		</if>
+	<!-- 查询query -->
+	<sql id="queryBasicLike" databaseId="mysql">
+		and basic_title like CONCAT('%',#{keyWord},'%')
+	</sql>
+	<sql id="queryBasicLike" databaseId="oracle">
+		and basic_title like '%'||#{ keyWord}||'%'
+	</sql>
+	<sql id="queryBasicLike" databaseId="sqlServer">
+		and basic_title like '%'+#{ keyWord}+'%'
+	</sql>
+	<select id="query" resultMap="resultMap" parameterType="int">
+		select
+		<include refid="column_list" />
+		from basic
+		<where>
+			<if test=" appId !=null">
+				and basic_appid=#{appId}
+			</if>
 		<if test=" categoryId > 0">
 			and basic_categoryid=#{categoryId}
 		</if>
 		<if test="modelId != null">
 			and basic_modelId = #{modelId}
 		</if>
-	</sql>
-	<sql id="queryOrderBy">
-		<if test=" orderField != null">
+			<if test=" keyWord !=null ">
+				<include refid="queryBasicLike"></include> 
+			</if>
+		</where>
+			<if test=" orderField != null">
 			order by #{orderField}
 			<if  test=" ad != null">
 				#{ad}
@@ -137,45 +153,6 @@
 		<if test=" orderField == null">
 			order by basic_id desc
 		</if>
-	</sql>
-	<!-- MySQL查询query -->
-	<select id="query" resultMap="resultMap" parameterType="int" databaseId="mysql">
-		select
-		<include refid="column_list" />
-		from basic
-		<where>
-			<include refid="queryWhereValues"></include>
-			<if test=" keyWord !=null ">
-				and basic_title like CONCAT('%',#{appUrl},'%') 
-			</if>
-		</where>
-			<include refid="queryOrderBy"></include>
-	</select>
-	<!-- oracle查询query -->
-	<select id="query" resultMap="resultMap" parameterType="int" databaseId="oracle">
-		select
-		<include refid="column_list" />
-		from basic
-		<where>
-			<include refid="queryWhereValues"></include>
-			<if test=" keyWord !=null ">
-				and basic_title like '%'||#{ keyWord}||'%'
-			</if>			
-		</where>
-			<include refid="queryOrderBy"></include>
-	</select>
-	<!-- sqlServer查询query -->
-	<select id="query" resultMap="resultMap" parameterType="int" databaseId="sqlServer">
-		select
-		<include refid="column_list" />
-		from basic
-		<where>
-			<include refid="queryWhereValues"></include>
-			<if test=" keyWord !=null ">
-				and basic_title like '%'+#{ keyWord}+'%'
-			</if>			
-		</where>
-			<include refid="queryOrderBy"></include>
 	</select>
 	<!-- 更新文章点击次数 -->
 	<update id="updateHit">
