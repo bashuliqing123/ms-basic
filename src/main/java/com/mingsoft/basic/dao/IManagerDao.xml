@@ -62,10 +62,8 @@
 		<if test="managerPeopleID &gt; 0">#{managerPeopleID},</if>
 		<if test="managerTime != null">#{managerTime},</if>
 	</sql>
-	
-	<!-- mysql增加管理员开始 -->
-	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity"  useGeneratedKeys="true" keyProperty="managerId" databaseId="mysql">
-		insert into manager
+	<sql id="insertSql" >
+	  insert into manager
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<include refid="insertColumns"></include>
 		</trim>
@@ -73,6 +71,15 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<include refid="insertValues"></include>
 		</trim>
+	</sql>
+	<!-- mysql增加管理员开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity"  useGeneratedKeys="true" keyProperty="managerId" databaseId="mysql">
+		<include refid="insertSql"></include>
+	</insert>
+	<!-- mysql增加管理员结束 -->
+	<!-- mysql增加管理员开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity"  useGeneratedKeys="true" keyProperty="managerId" databaseId="sqlServer">
+		<include refid="insertSql"></include>
 	</insert>
 	<!-- mysql增加管理员结束 -->
 	

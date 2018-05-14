@@ -49,21 +49,28 @@
 	</select>
 
 	<!-- 根据域名查找站点实体 -->
-	<select id="getByUrl" resultMap="resultMap" parameterType="String" databaseId="mysql">
-		select *
-		from app
-		where APP_URL like CONCAT('%',#{appUrl},'%') limit 0,1
+	<select id="getByUrl" resultMap="resultMap" parameterType="int">
+		select * from app
+		where APP_id = #{appId}
 	</select>
-		<!-- 根据域名查找站点实体 -->
-	<select id="getByUrl" resultMap="resultMap" parameterType="String" databaseId="oracle">
-		select *
-		from app
-		where APP_URL like '%'||#{appUrl}||'%' and rownum = 1
+	<sql id="selectWhere" databaseId="mysql">
+		CONCAT('%',#{appUrl},'%') limit 0,1
+	</sql>
+	<sql id="selectWhere" databaseId="oracle">
+		'%'||#{ appUrl}||'%' and rownum=1
+	</sql>
+	<sql id="selectWhere" databaseId="sqlServer">
+		'%'+#{ appUrl}+'%'
+	</sql>
+	<sql id="selectWhereSql">
+		app where APP_URL like <include refid="selectWhere"></include>
+	</sql>
+	<!-- 根据域名查找站点实体 -->
+	<select id="getByUrl" resultMap="resultMap" parameterType="String">
+		select * from <include refid="selectWhereSql"></include>
 	</select>
-		<select id="getByUrl" resultMap="resultMap" parameterType="String" databaseId="sqlServer">
-		select top(1) *
-		from app
-		where APP_URL like '%'+#{appUrl}+'%' 
+	<select id="getByUrl" resultMap="resultMap" parameterType="String" databaseId="sqlServer">
+		select top(1) * from <include refid="selectWhereSql"></include>
 	</select>
 
 	<!-- 根据ID查询结束 -->

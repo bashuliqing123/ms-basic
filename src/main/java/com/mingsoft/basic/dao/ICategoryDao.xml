@@ -220,25 +220,22 @@
 		</if>
 		and del=0
 	</sql>
+	<sql id="selectWhere" databaseId="mysql">
+		CONCAT('%',#{appUrl},'%') limit 0,1
+	</sql>
+	<sql id="selectWhere" databaseId="oracle">
+		'%'||#{ appUrl}||'%' and rownum=1
+	</sql>
+	<sql id="selectWhere" databaseId="sqlServer">
+		'%'+#{ appUrl}+'%'
+	</sql>
+	<select id="query" resultMap="resultMap"
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" >
+		<include refid="selectSql"></include>
+		<if test="categoryTitle != null and categoryTitle != ''"> and CATEGORY_TITLE like <include refid="selectWhere"></include> </if>
+		order by category_id desc
+	</select>
 	
-	<select id="query" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="mysql">
-		<include refid="selectSql"></include>
-		<if test="categoryTitle != null and categoryTitle != ''"> and CATEGORY_TITLE like CONCAT('%',#{categoryTitle},'%') </if>
-		order by category_id desc
-	</select>
-	<select id="query" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="oracle">
-		<include refid="selectSql"></include>
-		<if test="categoryTitle != null and categoryTitle != ''"> and CATEGORY_TITLE like '%'||#{categoryTitle}||'%' </if>
-		order by category_id desc
-	</select>
-	<select id="query" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="sqlServer">
-		<include refid="selectSql"></include>
-		<if test="categoryTitle != null and categoryTitle != ''"> and CATEGORY_TITLE like '%'+#{categoryTitle}+'%' </if>
-		order by category_id desc
-	</select>
 	<!-- 根据上级分类ID和模块编号对分类进行分页查询结束 -->
 	<sql id="queryChildrenSql">
 		<if test="categoryModelId &gt; 0">
@@ -255,7 +252,6 @@
 		<if test="categoryParentId != null">
 				CATEGORY_PARENT_ID like '%${categoryParentId}%'
 		</if>
-		
 	</sql>
 	<select id="queryByDictId" resultMap="resultMap"
 		parameterType="com.mingsoft.basic.entity.CategoryEntity" >

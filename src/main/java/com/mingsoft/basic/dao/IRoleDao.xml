@@ -22,9 +22,9 @@
 		<if test="roleManagerId != null">#{roleManagerId},</if>
 		<if test="appId != null">#{appId}</if>
 	</sql>
-	<!-- mysql新增角色开始 -->
-	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.RoleEntity" useGeneratedKeys="true" keyProperty="roleId">
-		insert into role
+	
+	<sql id="mysqlAndSqlServer">
+	    insert into role
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<include refid="insertColumns"></include>
 		</trim>
@@ -32,8 +32,17 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<include refid="insertValues"></include>
 		</trim>
+	</sql>
+	<!-- mysql新增角色开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.RoleEntity" useGeneratedKeys="true" keyProperty="roleId" databaseId="mysql">
+		 <include refid="mysqlAndSqlServer"></include>
 	</insert>
 	<!-- mysql新增角色结束 -->
+	<!-- sqlServer新增角色开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.basic.entity.RoleEntity" useGeneratedKeys="true" keyProperty="roleId" databaseId="sqlServer">
+	    <include refid="mysqlAndSqlServer"></include>
+	</insert>
+	<!-- sqlServer新增角色结束 -->
 	
 	<!-- oracle添加 开始 -->
 	<insert id="saveEntity" useGeneratedKeys="false" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="oracle">
@@ -83,33 +92,28 @@
 	<select id="queryAll" resultMap="resultMap">
 		select * from role
 	</select>
+	<!-- mysql模糊查询 -->
+	<sql id="selectWhere" databaseId="mysql">
+	     CONCAT('%',#{roleName},'%')
+	</sql>
+	<!-- oracle模糊查询 -->
+	<sql id="selectWhere" databaseId="oracle">
+	    '%'||#{roleName}||'%' 
+	</sql>
+	<!-- sqlServer模糊查询 -->
+	<sql id="selectWhere" databaseId="sqlServer">
+	    '%'+#{roleName}+'%' 
+	</sql>
 	<!--mysql条件查询-->	
-	<select id="query" resultMap="resultMap" databaseId="mysql">
+	<select id="query" resultMap="resultMap">
 		select * from role  
 		<where>
-			<if test="roleName != null and roleName != ''">and ROLE_NAME like CONCAT('%',#{roleName},'%') </if>			
+			<if test="roleName != null and roleName != ''">and ROLE_NAME like <include refid="selectWhere"></include></if>				
 			<if test="roleManagerId != null"> and ROLE_MANAGERID=#{roleManagerId} </if>	
 		</where>		
 		order by ROLE_ID desc
 	</select>
-	<!--oracle条件查询-->	
-	<select id="query" resultMap="resultMap" databaseId="oracle">
-		select * from role  
-		<where>
-			<if test="roleName != null and roleName != ''">and ROLE_NAME like '%'||#{roleName}||'%' </if>			
-			<if test="roleManagerId != null"> and ROLE_MANAGERID=#{roleManagerId} </if>	
-		</where>		
-		order by ROLE_ID desc
-	</select>
-	<!--sqlServer条件查询-->	
-	<select id="query" resultMap="resultMap" databaseId="sqlServer">
-		select * from role  
-		<where>
-			<if test="roleName != null and roleName != ''">and ROLE_NAME like '%'+#{roleName}+'%' </if>			
-			<if test="roleManagerId != null"> and ROLE_MANAGERID=#{roleManagerId} </if>	
-		</where>		
-		order by ROLE_ID desc
-	</select>
+	
 	<!--批量删除-->	
 	<delete id="delete" >
 		delete from role
@@ -119,11 +123,28 @@
 		</where>
 	</delete>
 	<!--根据实体获取-->
-	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity">
-		select * from role 
-		<where>
+	<sql id="sqlWhere">
+	 	<where>
 			<if test="roleName != null and roleName != ''"> and ROLE_NAME=#{roleName} </if>				
 			<if test="roleManagerId &gt; 0"> and ROLE_MANAGERID=#{roleManagerId} </if>				
 		</where>
-	</select>	
+	</sql>
+	<!--mysql根据实体获取-->
+	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="mysql">
+		select * from role 
+		<include refid="sqlWhere"></include>
+		limit 0,1
+	</select>
+	<!--oracle根据实体获取-->
+	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="oracle">
+		select * from role 
+		<include refid="sqlWhere"></include>
+		where rownum = 1
+	</select>
+		<!--sqlServer根据实体获取-->
+	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="sqlServer">
+		select top(1) * from role 
+		<include refid="sqlWhere"></include>
+	</select>
+	
 </mapper>

@@ -124,18 +124,33 @@
 	</select>
 	<!-- 根据ID查询结束 -->
 	
-	<sql id="whereSqlCondition">
-		<if test=" appId !=null">
-			and basic_appid=#{appId}
-		</if>
-		<if test=" categoryId > 0">
-			and basic_categoryid=#{categoryId}
-		</if>
-		<if test="modelId != null">
-			and basic_modelId = #{modelId}
-		</if>
+	<sql id="selectWhere" databaseId="mysql">
+		CONCAT('%',#{appUrl},'%') limit 0,1
 	</sql>
-	<sql id="orderBySql">
+	<sql id="selectWhere" databaseId="oracle">
+		'%'||#{ keyWord}||'%'
+	</sql>
+	<sql id="selectWhere" databaseId="sqlServer">
+		'%'+#{ keyWord}+'%'
+	</sql>
+	<select id="query" resultMap="resultMap" parameterType="int">
+		select
+		<include refid="column_list" />
+		from basic
+		<where>
+			<if test=" appId !=null">
+				 and basic_appid=#{appId}
+			</if>
+			<if test=" categoryId > 0">
+				 and basic_categoryid=#{categoryId}
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<if test=" keyWord !=null ">
+				and basic_title like <include refid="selectWhere"></include>
+			</if>			
+		</where>
 		<if test=" orderField != null">
 			order by #{orderField}
 			<if  test=" ad != null">
@@ -144,52 +159,8 @@
 		</if>
 		<if test=" orderField == null">
 			order by basic_id desc
-		</if>
-	</sql>
-	<!-- mysql根据ID查询开始 -->
-	<select id="query" resultMap="resultMap" parameterType="int" databaseId="mysql">
-		select
-		<include refid="column_list" />
-		from basic
-		<where>
-			<include refid="whereSqlCondition"></include>
-			<if test=" keyWord !=null ">
-				and basic_title like CONCAT('%',#{ keyWord},'%')
-			</if>			
-		</where>
-			<include refid="orderBySql"></include>	
+		</if>		
 	</select>
-	<!-- mysql根据ID查询结束 -->
-	
-	<!-- oracle根据ID查询开始 -->
-	<select id="query" resultMap="resultMap" parameterType="int" databaseId="oracle">
-		select
-		<include refid="column_list" />
-		from basic
-		<where>
-			<include refid="whereSqlCondition"></include>
-			<if test=" keyWord !=null ">
-				and basic_title like '%'||#{ keyWord}||'%'
-			</if>			
-		</where>
-		<include refid="orderBySql"></include>	
-	</select>
-	<!-- oracle根据ID查询结束 -->
-	<!-- sqlServer根据ID查询开始 -->
-	<select id="query" resultMap="resultMap" parameterType="int" databaseId="sqlServer">
-		select
-		<include refid="column_list" />
-		from basic
-		<where>
-			<include refid="whereSqlCondition"></include>
-			<if test=" keyWord !=null ">
-				and basic_title like '%'+#{ keyWord}+'%'
-			</if>			
-		</where>
-		<include refid="orderBySql"></include>	
-	</select>
-	<!-- sqlServer根据ID查询结束 -->
-	
 
 	<!-- 更新文章点击次数 -->
 	<update id="updateHit">
