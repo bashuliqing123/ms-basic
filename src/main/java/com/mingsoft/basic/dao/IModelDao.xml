@@ -43,9 +43,9 @@
 	    <if test="modelIsMenu != null">#{modelIsMenu},</if>
 	    <if test="modelParentIds != null and modelParentIds != ''">#{modelParentIds},</if>
 	</sql>
-	<!-- mysql添加开始 -->
+	<!-- mysql或sqlServer添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="modelId"
-		parameterType="com.mingsoft.basic.entity.ModelEntity" databaseId="mysql">
+		parameterType="com.mingsoft.basic.entity.ModelEntity" >
 		insert into model
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<include refid="insertColumns"></include>
@@ -55,7 +55,7 @@
 			<include refid="insertValues"></include>
 		</trim>
 	</insert>
-	<!-- mysql添加结束 -->
+	<!-- mysql或sqlServer添加结束 -->
 	<!-- oracle添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="false"
 		parameterType="com.mingsoft.basic.entity.ModelEntity" databaseId="oracle">
