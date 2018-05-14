@@ -264,15 +264,23 @@
 		and del=0
 		order by category_id desc
 	</select>
-
-	<!-- mysql模糊查询开始 -->
+	<sql id="selectWhereCategoryId" databaseId="mysql">
+		find_in_set('${categoryId}',CATEGORY_PARENT_ID)
+	</sql>
+	<sql id="selectWhereCategoryId" databaseId="oracle">
+		'${categoryId}' IN CATEGORY_PARENT_ID
+	</sql>
+	<sql id="selectWhereCategoryId" databaseId="sqlServer">
+		'${categoryId}' IN CATEGORY_PARENT_ID
+	</sql>
+	<!-- 模糊查询开始 -->
 	<select id="queryChildren" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="mysql">
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" >
 		select * from category 
 		<where>
 			<include refid="queryChildrenSql"></include>
 			<if test="categoryParentId == null">
-				find_in_set('${categoryId}',CATEGORY_PARENT_ID)
+				<include refid="selectWhereCategoryId"></include>
 			</if>
 			<if test="categoryId &gt; 0">
 				or category_id=#{categoryId}
@@ -281,42 +289,7 @@
 			and del=0
 		</where>
 	</select>
-	<!-- mysql模糊查询结束 -->
-	<!-- sqlServer模糊查询开始 -->
-	<select id="queryChildren" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="sqlServer">
-		select * from category 
-		<where>
-			<include refid="queryChildrenSql"></include>
-			<if test="categoryParentId == null">
-				'${categoryId}' IN CATEGORY_PARENT_ID
-			</if>
-			<if test="categoryId &gt; 0">
-				or category_id=#{categoryId}
-			</if>
-			)
-			and del=0
-		</where>
-	</select>
-	<!-- oracle模糊查询开始 -->
-	<select id="queryChildren" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="oracle">
-		select * from category 
-		<where>
-			<include refid="queryChildrenSql"></include>
-			<if test="categoryParentId == null">
-				'${categoryId}' IN CATEGORY_PARENT_ID
-			</if>
-			<if test="categoryId &gt; 0">
-				or category_id=#{categoryId}
-			</if>
-			)
-			and del=0
-		</where>
-	</select>
-	<!-- oracle模糊查询结束  -->
-	
-
+	<!-- 模糊查询结束 -->
 
 	<!-- 根据分类ID批量查询分类实体,并按照字段压入顺序排序开始 -->
 	<select id="queryByDescription" resultMap="resultMap"
