@@ -37,11 +37,8 @@
 			关联表category的更新人 -->
 		<result column="update_by" property="categoryUpdateBy" />
 	</resultMap>
-	
-	<sql id="insertColumnsAndValues">
-		<!-- 添加表字段 -->
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="categoryTitle != null">category_title,</if><!-- 类别标题 -->
+	<sql id="insertColumns">
+		<if test="categoryTitle != null">category_title,</if><!-- 类别标题 -->
 	    	<if test="categorySort &gt; -1">category_sort,</if>
 	        <if test="categoryDateTime != null">category_datetime,</if>
 	        <if test="categoryManagerId &gt; 0">category_managerid,</if>
@@ -54,10 +51,9 @@
 	        <if test="categoryDictId &gt; 0">category_dict_id,</if>
 	        <if test="createBy &gt; 0">create_by,</if>
 	        <if test="createDate != null">create_date,</if>
-		</trim>
-		<!-- 注入控制层字段 -->
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="categoryTitle != null">#{categoryTitle},</if>
+	</sql>
+	<sql id="insertValues">
+		<if test="categoryTitle != null">#{categoryTitle},</if>
 	        <if test="categorySort &gt; -1">#{categorySort},</if>
 	        <if test="categoryDateTime != null">#{categoryDateTime},</if>
 	        <if test="categoryManagerId &gt; 0">#{categoryManagerId},</if>
@@ -70,13 +66,19 @@
 	        <if test="categoryDictId &gt; 0">#{categoryDictId},</if>
 	        <if test="createBy &gt; 0">#{createBy},</if>
 	        <if test="createDate != null">#{createDate},</if>
-		</trim>
 	</sql>
 	<!-- MySql类别添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="categoryId"
 		parameterType="com.mingsoft.base.entity.BaseEntity" >
 		insert into basic
-		<include refid="insertColumnsAndValues"></include>
+		<!-- 添加表字段 -->
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<include refid="insertColumns"></include>
+		</trim>
+		<!-- 注入控制层字段 -->
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<include refid="insertValues"></include>
+		</trim>
 	</insert>
 	<!-- MySql类别添加结束 -->
 	<!-- Oracle类别添加开始 -->
@@ -85,8 +87,16 @@
 			select seq_category_id.nextval as categoryId from dual
 		</selectKey>	
 		insert into category
-		<!-- 注入表字段 -->
-		<include refid="insertColumnsAndValues"></include>
+		<!-- 添加表字段 -->
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			category_id,
+			<include refid="insertColumns"></include>
+		</trim>
+		<!-- 注入控制层字段 -->
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{categoryId},
+			<include refid="insertValues"></include>
+		</trim>
 	</insert>
 	<!-- Oracle类别添加结束 -->
 
@@ -180,6 +190,7 @@
 		<if test="order==false">desc</if>
 	</select>
 	
+		
 	<sql id="queryValues">
 		 category_modelId=#{categoryModelId}
 		<if test="categoryDateTime != null"> and CATEGORY_DATETIME=#{categoryDateTime} </if>
@@ -197,27 +208,47 @@
 		</if>
 		and del=0
 	</sql>
-	<sql id="queryWhere" databaseId="mysql">
-		CONCAT('%',#{appUrl},'%') limit 0,1
+	<sql id="queryCategoryLike" databaseId="mysql">
+		like CONCAT('%',#{appUrl},'%')
 	</sql>
-	<sql id="queryWhere" databaseId="oracle">
-		'%'||#{ appUrl}||'%' and rownum=1
+	<sql id="queryCategoryLike" databaseId="oracle">
+		like '%'||#{ appUrl}||'%' and rownum=1
 	</sql>
-	<sql id="queryWhere" databaseId="sqlServer">
-		'%'+#{ appUrl}+'%'
+	<sql id="queryCategoryLike" databaseId="sqlServer">
+		like '%'+#{ appUrl}+'%'
 	</sql>
 	<select id="query" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" >
+		parameterType="com.mingsoft.basic.entity.CategoryEntity"  databaseId="mysql">
 		select <include refid="category_list" /> from category where
 		<include refid="queryValues"></include>
 		<if test="categoryTitle != null and categoryTitle != ''"> 
-		and CATEGORY_TITLE like <include refid="queryWhere"></include>
+		and CATEGORY_TITLE  <include refid="queryCategoryLike"></include>
+		</if>
+		order by category_id desc
+		limit 0,1
+	</select>
+	<select id="query" resultMap="resultMap"
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="oracle">
+		select <include refid="category_list"  /> from category where
+		<include refid="queryValues"></include>
+		<if test="categoryTitle != null and categoryTitle != ''"> 
+		and CATEGORY_TITLE  <include refid="queryCategoryLike"></include>
+		</if>
+		order by category_id desc
+	</select>
+	<select id="query" resultMap="resultMap"
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="sqlServer">
+		select top(1) <include refid="category_list" /> from category where
+		<include refid="queryValues"></include>
+		<if test="categoryTitle != null and categoryTitle != ''"> 
+		and CATEGORY_TITLE  <include refid="queryCategoryLike"></include>
 		</if>
 		order by category_id desc
 	</select>
 	
+	
 	<!-- 根据上级分类ID和模块编号对分类进行分页查询结束 -->
-	<sql id="queryChildrenSql">
+	<sql id="queryChildrenValues">
 		<if test="categoryModelId &gt; 0">
 			and category_modelId=#{categoryModelId}
 		</if>
@@ -244,13 +275,13 @@
 		and del=0
 		order by category_id desc
 	</select>
-	<sql id="selectWhereCategoryId" databaseId="mysql">
+	<sql id="queryWhereCategoryId" databaseId="mysql">
 		find_in_set('${categoryId}',CATEGORY_PARENT_ID)
 	</sql>
-	<sql id="selectWhereCategoryId" databaseId="oracle">
+	<sql id="queryWhereCategoryId" databaseId="oracle">
 		'${categoryId}' IN CATEGORY_PARENT_ID
 	</sql>
-	<sql id="selectWhereCategoryId" databaseId="sqlServer">
+	<sql id="queryWhereCategoryId" databaseId="sqlServer">
 		'${categoryId}' IN CATEGORY_PARENT_ID
 	</sql>
 	<!-- 模糊查询开始 -->
@@ -258,9 +289,9 @@
 		parameterType="com.mingsoft.basic.entity.CategoryEntity" >
 		select * from category 
 		<where>
-			<include refid="queryChildrenSql"></include>
+			<include refid="queryChildrenValues"></include>
 			<if test="categoryParentId == null">
-				<include refid="selectWhereCategoryId"></include>
+				<include refid="queryWhereCategoryId"></include>
 			</if>
 			<if test="categoryId &gt; 0">
 				or category_id=#{categoryId}
