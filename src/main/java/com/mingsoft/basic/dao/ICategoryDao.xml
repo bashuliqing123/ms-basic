@@ -67,7 +67,7 @@
 	        <if test="createBy &gt; 0">#{createBy},</if>
 	        <if test="createDate != null">#{createDate},</if>
 	</sql>
-	<!-- MySql类别添加开始 -->
+	<!-- mysqlAndSqlServer类别添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="categoryId"
 		parameterType="com.mingsoft.base.entity.BaseEntity" >
 		insert into basic
@@ -80,7 +80,7 @@
 			<include refid="insertValues"></include>
 		</trim>
 	</insert>
-	<!-- MySql类别添加结束 -->
+	<!-- mysqlAndSqlServer类别添加结束 -->
 	<!-- Oracle类别添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="false" keyProperty="categoryId" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="oracle" >
 		<selectKey resultType="Integer"  keyProperty="categoryId" order="BEFORE">
