@@ -70,7 +70,7 @@
 	<!-- mysqlAndSqlServer类别添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="categoryId"
 		parameterType="com.mingsoft.base.entity.BaseEntity" >
-		insert into basic
+		insert into category
 		<!-- 添加表字段 -->
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<include refid="insertColumns"></include>
