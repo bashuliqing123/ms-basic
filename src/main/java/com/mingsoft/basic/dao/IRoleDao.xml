@@ -85,22 +85,22 @@
 		select * from role
 	</select>
 	<!-- mysql模糊查询 -->
-	<sql id="selectWhere" databaseId="mysql">
-	     CONCAT('%',#{roleName},'%')
+	<sql id="queryRolelike" databaseId="mysql">
+	    like  CONCAT('%',#{roleName},'%')
 	</sql>
 	<!-- oracle模糊查询 -->
-	<sql id="selectWhere" databaseId="oracle">
-	    '%'||#{roleName}||'%' 
+	<sql id="queryRolelike" databaseId="oracle">
+	    like '%'||#{roleName}||'%' 
 	</sql>
 	<!-- sqlServer模糊查询 -->
-	<sql id="selectWhere" databaseId="sqlServer">
-	    '%'+#{roleName}+'%' 
+	<sql id="queryRolelike" databaseId="sqlServer">
+	    like '%'+#{roleName}+'%' 
 	</sql>
 	<!--mysql条件查询-->	
 	<select id="query" resultMap="resultMap">
 		select * from role  
 		<where>
-			<if test="roleName != null and roleName != ''">and ROLE_NAME like <include refid="selectWhere"></include></if>				
+			<if test="roleName != null and roleName != ''">and ROLE_NAME  <include refid="queryRolelike"></include></if>				
 			<if test="roleManagerId != null"> and ROLE_MANAGERID=#{roleManagerId} </if>	
 		</where>		
 		order by ROLE_ID desc
