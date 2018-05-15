@@ -145,13 +145,9 @@
 		from category c where category_id=#{categoryId} and del=0
 	</select>
 	<!-- 根据ID查询结束 -->
-
-	<!-- 根据实体查询开始 -->
-	<select id="getByEntity" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity">
-		select * from category
-		<where>
-			<if test="categoryTitle != null">and category_title=#{categoryTitle}</if>
+	
+    <sql id="getCategoryWhere">
+            <if test="categoryTitle != null">and category_title=#{categoryTitle}</if>
 			<if test="categorySort &gt; 0 and categorySort != null">and category_sort=#{categorySort}</if>
 			<if test="categoryDateTime != null">and category_datetime=#{categoryDateTime}</if>
 			<if test="categoryManagerId &gt; 0">and category_managerid=#{categoryManagerId}</if>
@@ -162,10 +158,37 @@
 			<if test="categoryDictId &gt; 0">and category_dict_id=#{categoryDictId}</if>
 			<if test="updateDate != null">and update_date=#{updateDate}</if>
 			<if test="updateBy &gt; 0">and update_by=#{updateBy}</if>
-			and del=0
+			and del=0 
+    </sql>
+	<!-- mysql根据实体查询开始 -->
+	<select id="getByEntity" resultMap="resultMap"
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="mysql">
+		select * from category
+		<where>
+			<include refid="getCategoryWhere"></include>
+		</where>
+		limit 0,1
+	</select>
+	<!-- mysql根据实体查询结束 -->
+	<!-- oracle根据实体查询开始 -->
+	<select id="getByEntity" resultMap="resultMap"
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="oracle">
+		select * from category
+		<where>
+			<include refid="getCategoryWhere"></include>
+			and rownum=1
 		</where>
 	</select>
-	<!-- 根据实体查询结束 -->
+	<!-- oracle根据实体查询结束 -->
+	<!-- sqlServer根据实体查询开始 -->
+	<select id="getByEntity" resultMap="resultMap"
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="sqlServer">
+		select top(1) * from category
+		<where>
+			<include refid="getCategoryWhere"></include>
+		</where>
+	</select>
+	<!-- sqlServer根据实体查询结束 -->
 
 	<!-- 根据上级分类ID和模块编号对分类进行分页查询开始 -->
 	<!-- 过期 推荐query -->
@@ -189,10 +212,24 @@
 		<if test="order==true">asc</if>
 		<if test="order==false">desc</if>
 	</select>
-	
-		
-	<sql id="queryValues">
-		 category_modelId=#{categoryModelId}
+
+	<!-- forMySql -->
+	<sql id="queryCateGoryWhere" databaseId="mysql">
+	    and CATEGORY_TITLE  like CONCAT('%',#{appUrl},'%')
+	</sql>
+	<!-- forOracle -->
+	<sql id="queryCateGoryWhere" databaseId="oracle">
+	    and CATEGORY_TITLE like '%'||#{ appUrl}||'%'
+	</sql>
+	<!-- forSqlServer -->
+	<sql id="queryCateGoryWhere" databaseId="sqlServer">
+	    and CATEGORY_TITLE like '%'+#{ appUrl}+'%'
+	</sql>
+	<!-- 查询开始 -->
+	<select id="query" resultMap="resultMap"
+		parameterType="com.mingsoft.basic.entity.CategoryEntity" >
+		select <include refid="category_list" /> from category where
+		category_modelId=#{categoryModelId}
 		<if test="categoryDateTime != null"> and CATEGORY_DATETIME=#{categoryDateTime} </if>
 		<if test="categoryManagerId &gt; 0">
 			and category_managerid=#{categoryManagerId}
@@ -206,39 +243,13 @@
 		<if test="categoryDictId &gt; 0">
 			and CATEGORY_DICT_ID=#{categoryDictId}
 		</if>
-		and del=0
-	</sql>
-	
-	<select id="query" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity"  databaseId="mysql">
-		select <include refid="category_list" /> from category where
-		<include refid="queryValues"></include>
+		    and del=0
 		<if test="categoryTitle != null and categoryTitle != ''"> 
-		and CATEGORY_TITLE  like CONCAT('%',#{appUrl},'%')
-		</if>
-		order by category_id desc
-		limit 0,1
-	</select>
-	
-	<select id="query" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="oracle">
-		select <include refid="category_list"  /> from category where
-		<include refid="queryValues"></include>
-		<if test="categoryTitle != null and categoryTitle != ''"> 
-		and CATEGORY_TITLE like '%'||#{ appUrl}||'%' and rownum=1
+		     <include refid="queryCateGoryWhere"></include>
 		</if>
 		order by category_id desc
 	</select>
-	
-	<select id="query" resultMap="resultMap"
-		parameterType="com.mingsoft.basic.entity.CategoryEntity" databaseId="sqlServer">
-		select top(1) <include refid="category_list" /> from category where
-		<include refid="queryValues"></include>
-		<if test="categoryTitle != null and categoryTitle != ''"> 
-		and CATEGORY_TITLE like '%'+#{ appUrl}+'%'
-		</if>
-		order by category_id desc
-	</select>
+	<!-- 查询结束 -->
 	
 	
 	<!-- 根据上级分类ID和模块编号对分类进行分页查询结束 -->
