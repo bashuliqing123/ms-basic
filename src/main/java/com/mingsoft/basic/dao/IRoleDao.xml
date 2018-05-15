@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- 角色持久化层XML配置继承IRoleDao -->
 <mapper namespace="com.mingsoft.basic.dao.IRoleDao">
-	
+
 	<!-- 将实体属性与表字段对接开始 -->
 	<resultMap id="resultMap" type="com.mingsoft.basic.entity.RoleEntity">
 		<id column="ROLE_ID" property="roleId"/><!-- 将实体的ID属性与表的ID字段对接 -->
@@ -115,28 +115,32 @@
 		</where>
 	</delete>
 	<!--根据实体获取-->
-	<sql id="queryRoleWhere">
-	 	<where>
-			<if test="roleName != null and roleName != ''"> and ROLE_NAME=#{roleName} </if>				
-			<if test="roleManagerId &gt; 0"> and ROLE_MANAGERID=#{roleManagerId} </if>				
-		</where>
+	<sql id="getRoleWhere">
+		<if test="roleName != null and roleName != ''"> and ROLE_NAME=#{roleName} </if>				
+		<if test="roleManagerId &gt; 0"> and ROLE_MANAGERID=#{roleManagerId} </if>				
 	</sql>
 	<!--mysql根据实体获取-->
 	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="mysql">
 		select * from role 
-		<include refid="queryRoleWhere"></include>
+		<where>
+			<include refid="getRoleWhere"></include>
+		</where>
 		limit 0,1
 	</select>
 	<!--oracle根据实体获取-->
 	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="oracle">
 		select * from role 
-		<include refid="queryRoleWhere"></include>
-		where rownum = 1
+		<where>
+			<include refid="getRoleWhere"></include>
+			rownum = 1
+		</where>
 	</select>
 		<!--sqlServer根据实体获取-->
 	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="sqlServer">
 		select top(1) * from role 
-		<include refid="queryRoleWhere"></include>
+		<where>
+			<include refid="getRoleWhere"></include>
+		</where>
 	</select>
 	
 </mapper>
