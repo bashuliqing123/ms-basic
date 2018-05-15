@@ -117,19 +117,38 @@
 	<!-- 查询管理员结束 -->
 	
 	<!--根据实体获取-->
-	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.ManagerEntity">
+	<sql id="getManagerWhere">
+		<if test="managerName != null and managerName != ''"> and MANAGER_NAME=#{managerName} </if>				
+	    <if test="managerNickName != null and managerNickName != ''"> and MANAGER_NICKNAME=#{managerNickName} </if>				
+	    <if test="managerPassword != null and managerPassword != ''"> and MANAGER_PASSWORD=#{managerPassword} </if>				
+	    <if test="managerRoleID &gt; 0"> and MANAGER_ROLEID=#{managerRoleID} </if>				
+	    <if test="managerPeopleID &gt; 0"> and MANAGER_PEOPLEID=#{managerPeopleID} </if>				
+	    <if test="managerTime != null"> and MANAGER_TIME=#{managerTime} </if>				
+	    <if test="managerSystemSkinId &gt; 0"> and MANAGER_SYSTEM_SKIN_ID=#{managerSystemSkinId} </if>
+	</sql>
+	<!-- mysql 查询实体 -->
+	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.ManagerEntity" databaseId="mysql">
 		select * from manager 
 		<where>
-			<if test="managerName != null and managerName != ''"> and MANAGER_NAME=#{managerName} </if>				
-			<if test="managerNickName != null and managerNickName != ''"> and MANAGER_NICKNAME=#{managerNickName} </if>				
-			<if test="managerPassword != null and managerPassword != ''"> and MANAGER_PASSWORD=#{managerPassword} </if>				
-			<if test="managerRoleID &gt; 0"> and MANAGER_ROLEID=#{managerRoleID} </if>				
-			<if test="managerPeopleID &gt; 0"> and MANAGER_PEOPLEID=#{managerPeopleID} </if>				
-			<if test="managerTime != null"> and MANAGER_TIME=#{managerTime} </if>				
-			<if test="managerSystemSkinId &gt; 0"> and MANAGER_SYSTEM_SKIN_ID=#{managerSystemSkinId} </if>				
+			<include refid="getManagerWhere"></include>				
+		</where>
+		limit 0,1
+	</select>
+	<!-- oracle 查询实体 -->
+	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.ManagerEntity" databaseId="oracle">
+		select * from manager 
+		<where>
+			<include refid="getManagerWhere"></include>
+			and rownum=1				
 		</where>
 	</select>
-	
+	<!-- SqlServer 查询实体 -->
+	<select id="getByEntity" resultMap="resultMap" parameterType="com.mingsoft.basic.entity.ManagerEntity" databaseId="sqlServer">
+		select top(1) * from manager 
+		<where>
+			<include refid="getManagerWhere"></include>
+		</where>
+	</select>
 	<!-- 更新管理员开始 -->
 	<update id="updateEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity">
 		update manager
