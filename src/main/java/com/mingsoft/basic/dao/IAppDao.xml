@@ -47,12 +47,6 @@
 		select * from app
 		where APP_id = #{appId}
 	</select>
-
-	<!-- 根据域名查找站点实体 -->
-	<select id="getByUrl" resultMap="resultMap" parameterType="int">
-		select * from app
-		where APP_id = #{appId}
-	</select>
 	<!-- 根据域名查找站点实体 -->
 	<select id="getByUrl" resultMap="resultMap" parameterType="String" databaseId="mysql">
 		select * from app where APP_URL like CONCAT('%',#{appUrl},'%') limit 0,1
