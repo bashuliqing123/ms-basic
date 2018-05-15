@@ -120,13 +120,8 @@
 		from basic_column co left join category ca on ca.category_id=co.column_category_id where ca.category_appid=#{appId} <include refid="where_modelcode"/>
 	</select>
 	<!-- 根据管站点ID查询栏目集结束 -->
-
-	<!-- 根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
-	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap" >
-		select
-		<include refid="column_list"/>
-		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
-		<if test="modelId!=null">
+    <sql id="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf">
+        <if test="modelId!=null">
 		 and ca.category_modelId=#{modelId}
 		</if> 
 		<if test="categoryCategoryId > 0">
@@ -135,10 +130,41 @@
 		<if test="categoryCategoryId == 0">
 		  and ca.category_categoryid is null or ca.category_categoryid=#{categoryCategoryId}
 		</if> 
+    </sql>
+	<!-- mysql根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
+	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap" databaseId="mysql">
+		select
+		<include refid="column_list"/>
+		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
+		<include refid="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf"/>
 		order by ca.CATEGORY_SORT desc,ca.category_id desc
-		<!--<if test="size!=null">
+		<if test="size!=null">
 			limit 0,#{size}
-		</if> -->
+		</if>
+	</select>
+	
+	<!-- oracle根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
+	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap"  databaseId="oracle">
+		select
+		<include refid="column_list"/>
+		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
+		<include refid="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf"/> 
+		<if test="size!=null">
+			and rownum  &lt;= #{size}
+		</if>
+		order by ca.CATEGORY_SORT desc,ca.category_id desc
+	</select>
+	
+	<!-- sqlServer根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
+	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap"  databaseId="sqlServer">
+		select 
+		<if test="size!=null">
+			top(#{size}) 
+		</if>
+		<include refid="column_list"/>
+		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
+		<include refid="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf"/>
+		order by ca.CATEGORY_SORT desc,ca.category_id desc
 	</select>
 	<!-- 根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合结束 -->
 	
