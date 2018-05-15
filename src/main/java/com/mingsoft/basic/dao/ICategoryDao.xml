@@ -257,7 +257,7 @@
 		find_in_set('${categoryId}',CATEGORY_PARENT_ID)
 	</sql>
 	<sql id="queryWhereCategoryId" databaseId="oracle" >
-		'${categoryId}' IN CATEGORY_PARENT_ID
+		instr(','||'${categoryId}'||',', ','||CATEGORY_PARENT_ID||',')>0
 	</sql>
 	<sql id="queryWhereCategoryId" databaseId="sqlServer">
 		CHARINDEX(','+'${categoryId}'+',' , ','+CATEGORY_PARENT_ID +',')>0
