@@ -2,7 +2,7 @@
   <#assign static="http://cdn.mingsoft.net">
   <#setting url_escaping_charset='utf-8'> 
   <#assign bootstrap="3.3.5">
-  <#assign manager_ui="4.6.0">
+  <#assign manager_ui="4.6.4">
   <#assign easyui="1.5">
   <meta content="IE=edge" http-equiv="X-UA-Compatible" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
