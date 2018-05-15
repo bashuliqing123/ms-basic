@@ -256,8 +256,11 @@
 	<sql id="queryWhereCategoryId" databaseId="mysql">
 		find_in_set('${categoryId}',CATEGORY_PARENT_ID)
 	</sql>
-	<sql id="queryWhereCategoryId" >
+	<sql id="queryWhereCategoryId" databaseId="oracle" >
 		'${categoryId}' IN CATEGORY_PARENT_ID
+	</sql>
+	<sql id="queryWhereCategoryId" databaseId="sqlServer">
+		CHARINDEX(','+'${categoryId}'+',' , ','+CATEGORY_PARENT_ID +',')>0
 	</sql>
 	<!-- 模糊查询开始 -->
 	<select id="queryChildren" resultMap="resultMap"
