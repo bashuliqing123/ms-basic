@@ -99,27 +99,43 @@
 		</trim>
 	</insert>
 	<!-- Oracle类别添加结束 -->
-
-	<!-- 更新类别开始 -->
+    <sql id="updateCategoryIf">
+        <if test="categoryTitle != null">category_title=#{categoryTitle},</if>
+		<if test="categorySort &gt; -1">category_sort=#{categorySort},</if>
+		<if test="categoryDateTime != null">category_datetime=#{categoryDateTime},</if>
+		<if test="categoryManagerId &gt; 0">category_managerid=#{categoryManagerId},</if>
+		<if test="categoryCategoryId &gt; 0">category_categoryid=#{categoryCategoryId},</if>
+		<if test="categorySmallImg != null">category_smallimg=#{categorySmallImg},</if>
+		<if test="categoryDescription != null">category_description=#{categoryDescription},</if>
+		<if test="categoryParentId != null">category_parent_id=#{categoryParentId},</if>
+		<if test="categoryDictId &gt; 0">category_dict_id=#{categoryDictId},</if>
+		<if test="updateDate != null">update_date=#{updateDate},</if>
+		<if test="updateBy &gt; 0">update_by=#{updateBy}</if>
+    </sql>
+	<!-- mysql更新类别开始 -->
 	<update id="updateEntity" parameterType="com.mingsoft.base.entity.BaseEntity">
 		update category set category_parent_id=null,category_categoryid=null where category_id = #{categoryId};
 		update category
 		<set>
-			<if test="categoryTitle != null">category_title=#{categoryTitle},</if>
-			<if test="categorySort &gt; -1">category_sort=#{categorySort},</if>
-			<if test="categoryDateTime != null">category_datetime=#{categoryDateTime},</if>
-			<if test="categoryManagerId &gt; 0">category_managerid=#{categoryManagerId},</if>
-			<if test="categoryCategoryId &gt; 0">category_categoryid=#{categoryCategoryId},</if>
-			<if test="categorySmallImg != null">category_smallimg=#{categorySmallImg},</if>
-			<if test="categoryDescription != null">category_description=#{categoryDescription},</if>
-			<if test="categoryParentId != null">category_parent_id=#{categoryParentId},</if>
-			<if test="categoryDictId &gt; 0">category_dict_id=#{categoryDictId},</if>
-			<if test="updateDate != null">update_date=#{updateDate},</if>
-			<if test="updateBy &gt; 0">update_by=#{updateBy}</if>
+			<include refid="updateCategoryIf" />
 		</set>
 		where category_id = #{categoryId}
 	</update>
-	<!-- 更新类别结束 -->
+	<!-- mysql更新类别结束 -->
+	<!-- oracle更新类别开始 -->
+	<update id="updateEntity" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="oracle">
+	    BEGIN
+		update category set category_parent_id=null,category_categoryid=null where category_id = #{categoryId};
+		update category
+		<set>
+			<include refid="updateCategoryIf" />
+		</set>
+		where category_id = #{categoryId};
+		END;
+	</update>
+	<!-- oracle更新类别结束 -->
+
+	
 
 	<!-- 删除类别开始 -->
 	<delete id="deleteEntity" parameterType="int">

@@ -73,17 +73,9 @@
 			<if test="columnPath != null">#{columnPath},</if>
 		</trim>
 	</insert>
-		<!-- 栏目添加结束 -->
-		
-			<!-- 更新栏目开始 -->
-	<update id="updateEntity" parameterType="com.mingsoft.base.entity.BaseEntity">
-		UPDATE basic_column
-		SET column_listurl = '',
-		column_url = ''
-		where  
-		column_category_id = #{categoryId};
-		update basic_column
-		<set>
+	<!-- 栏目添加结束 -->
+	
+	<sql id="updateBasicIf">
 			<if test="columnKeyword != null">column_keyword=#{columnKeyword},</if>
 			<if test="columnDescrip != null">column_descrip=#{columnDescrip},</if>
 			<if test="columnType != null">column_type=#{columnType},</if>
@@ -92,10 +84,37 @@
 			<if test="columnContentModelId &gt; 0">column_cm_id=#{columnContentModelId},</if>
 			<if test="columnContentModelId == 0">column_cm_id=null,</if>
 			<if test="columnPath != null">column_path=#{columnPath},</if>
+		</sql>
+	<!-- mysql更新栏目开始 -->
+	<update id="updateEntity" parameterType="com.mingsoft.base.entity.BaseEntity">
+		UPDATE basic_column
+		SET column_listurl = '',
+		column_url = ''
+		where  
+		column_category_id = #{categoryId};
+		update basic_column
+		<set>
+		<include refid="updateBasicIf"></include>
 		</set>
 		where column_category_id = #{categoryId}
 	</update>
-	<!-- 更新栏目结束 -->
+	<!-- mysql更新栏目结束 -->
+	<!-- oracle更新栏目开始 -->
+	<update id="updateEntity" parameterType="com.mingsoft.base.entity.BaseEntity" databaseId="oracle">
+	    BEGIN
+		UPDATE basic_column
+		SET column_listurl = '',
+		column_url = ''
+		where  
+		column_category_id = #{categoryId};
+		update basic_column
+		<set>
+		<include refid="updateBasicIf"></include>
+		</set>
+		where column_category_id = #{categoryId};
+		END;
+	</update>
+	<!-- oracle更新栏目结束 -->
 	
 	<!-- 删除栏目开始 -->
 	<delete id="deleteEntity" parameterType="int">
@@ -120,8 +139,13 @@
 		from basic_column co left join category ca on ca.category_id=co.column_category_id where ca.category_appid=#{appId} <include refid="where_modelcode"/>
 	</select>
 	<!-- 根据管站点ID查询栏目集结束 -->
-    <sql id="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf">
-        <if test="modelId!=null">
+
+	<!-- 根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
+	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap" >
+		select
+		<include refid="column_list"/>
+		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
+		<if test="modelId!=null">
 		 and ca.category_modelId=#{modelId}
 		</if> 
 		<if test="categoryCategoryId > 0">
@@ -130,41 +154,10 @@
 		<if test="categoryCategoryId == 0">
 		  and ca.category_categoryid is null or ca.category_categoryid=#{categoryCategoryId}
 		</if> 
-    </sql>
-	<!-- mysql根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
-	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap" databaseId="mysql">
-		select
-		<include refid="column_list"/>
-		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
-		<include refid="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf"/>
 		order by ca.CATEGORY_SORT desc,ca.category_id desc
-		<if test="size!=null">
+		<!--<if test="size!=null">
 			limit 0,#{size}
-		</if>
-	</select>
-	
-	<!-- oracle根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
-	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap"  databaseId="oracle">
-		select
-		<include refid="column_list"/>
-		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
-		<include refid="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf"/> 
-		<if test="size!=null">
-			and rownum  &lt;= #{size}
-		</if>
-		order by ca.CATEGORY_SORT desc,ca.category_id desc
-	</select>
-	
-	<!-- sqlServer根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合开始 -->
-	<select id="queryColumnByCategoryIdAndWebsiteIdAndModelId" resultMap="resultMap"  databaseId="sqlServer">
-		select 
-		<if test="size!=null">
-			top(#{size}) 
-		</if>
-		<include refid="column_list"/>
-		from basic_column co left join category ca on co.column_category_id=ca.category_id where ca.category_appid=#{appId}
-		<include refid="queryColumnByCategoryIdAndWebsiteIdAndModelIdIf"/>
-		order by ca.CATEGORY_SORT desc,ca.category_id desc
+		</if> -->
 	</select>
 	<!-- 根据站点Id查询栏目，返回该父栏目ID为categoryCategoryId的栏目集合结束 -->
 	
