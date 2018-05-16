@@ -48,12 +48,13 @@ import com.mingsoft.util.StringUtil;
 import net.mingsoft.basic.util.BasicUtil;
 
 /**
- * 文件上传通用servlet
- * 
- * @author 王天培QQ:78750478
- * @version 版本号：100-000-000<br/>
- *          创建日期：2012-03-15<br/>
- *          历史修订：<br/>
+ * 上传
+ * @see com.mingsoft.basic.action.web.FileAction
+ * @author 铭飞开发团队
+ * @version 
+ * 版本号：100-000-000<br/>
+ * 创建日期：2018年5月16日<br/>
+ * 历史修订：<br/>
  */
 @WebServlet(urlPatterns = "/upload")
 public class UploadServlet extends BaseServlet {
