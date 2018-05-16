@@ -117,42 +117,102 @@
 	<!-- 根据ID查询结束 -->
 	
 	<!-- 查询query -->
-	<sql id="queryBasicLike" databaseId="mysql">
-		and basic_title like CONCAT('%',#{keyWord},'%')
-	</sql>
-	<sql id="queryBasicLike" databaseId="oracle">
-		and basic_title like '%'||#{ keyWord}||'%'
-	</sql>
-	<sql id="queryBasicLike" databaseId="sqlServer">
-		and basic_title like '%'+#{ keyWord}+'%'
-	</sql>
-	<select id="query" resultMap="resultMap" parameterType="int">
-		select
-		<include refid="column_list" />
-		from basic
-		<where>
-			<if test=" appId !=null">
-				and basic_appid=#{appId}
-			</if>
+	<sql id="queryBasicWhere">
+		<if test=" appId !=null">
+			and basic_appid=#{appId}
+		</if>
 		<if test=" categoryId > 0">
 			and basic_categoryid=#{categoryId}
 		</if>
 		<if test="modelId != null">
 			and basic_modelId = #{modelId}
 		</if>
-			<if test=" keyWord !=null ">
-				<include refid="queryBasicLike"></include> 
-			</if>
-		</where>
-			<if test=" orderField != null">
-			order by #{orderField}
-			<if  test=" ad != null">
+	</sql>
+	<sql id="queryBasicOrderby">
+		<if test=" orderField != null">
+		     order by #{orderField}
+		     <if test=" ad != null">
 				#{ad}
-			</if>
+			 </if>
 		</if>
 		<if test=" orderField == null">
 			order by basic_id desc
 		</if>
+	</sql>
+	<!-- MySQL分页 -->
+	<select id="query" resultMap="resultMap" parameterType="int" databaseId="mysql">
+		select
+		<include refid="column_list" />
+		from basic
+		<where>
+			<include refid="queryBasicWhere"></include>
+			<if test=" keyWord !=null ">
+				and basic_title like CONCAT('%',#{keyWord},'%') 
+			</if>
+		</where>
+			<include refid="queryBasicOrderby"></include>
+			<if test=" begin !=null ">
+				limit #{begin}
+			</if>
+			<if test=" end !=null ">
+				,#{end}
+			</if>
+	</select>
+	<!-- oracle分页 -->
+	<select id="query" resultMap="resultMap" parameterType="int" databaseId="oracle">
+		select
+		<include refid="column_list" />
+		from 
+		<if  test=" end !=null ">
+			( SELECT b.*, ROWNUM RN FROM ( SELECT * FROM basic) b WHERE ROWNUM &lt;= #{end} )
+		</if>
+		<if  test=" end == null ">
+			basic
+		</if>
+		<where>
+			<include refid="queryBasicWhere"></include>
+			<if test=" keyWord !=null ">
+				and basic_title like '%'||#{ keyWord}||'%' 
+			</if>
+			<if test=" begin !=null ">
+				and RN &gt; #{begin}
+			</if>
+		</where>
+			<include refid="queryBasicOrderby"></include>
+	</select>
+	<!-- SqlServer分页 -->
+	<select id="query" resultMap="resultMap" parameterType="int" databaseId="sqlServer">
+		select
+		<include refid="column_list" />
+		from
+		<if  test=" end !=null ">
+			(select *, ROW_NUMBER() OVER(Order by  
+			<if test=" orderField == null">
+				 basic_id desc
+			</if> 
+			<if test=" orderField != null">
+		     	 #{orderField}
+		     	<if test=" ad != null">
+					#{ad}
+				</if>
+			</if>
+			) AS RowId from basic ) as b
+		</if>
+		<if  test=" end == null ">
+			basic
+		</if>
+		<where>
+			<include refid="queryBasicWhere"></include>
+			<if test=" keyWord !=null ">
+				and basic_title like '%'+#{ keyWord}+'%' 
+			</if>
+		</where>
+			<if test=" begin !=null ">
+				RowId between #{begin}
+			</if>
+			<if test=" end !=null ">
+				and #{end}
+			</if>
 	</select>
 	<!-- 更新文章点击次数 -->
 	<update id="updateHit">
