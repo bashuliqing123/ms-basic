@@ -22,6 +22,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -118,6 +119,9 @@ public class FileAction extends BaseAction {
 					if (fieldName.equals("uploadFloderPath")) {
 							uploadFloderPath = Streams.asString(input);
 							uploadFolder = BasicUtil.getRealPath(uploadFloderPath); // 上传的文件路径
+							if(!StringUtils.isEmpty(uploadPath)){
+								uploadFolder += uploadPath;
+							}
 							floderName = uploadFloderPath;
 							LOG.info("uploadPath:" + uploadFloderPath);
 						} 					
