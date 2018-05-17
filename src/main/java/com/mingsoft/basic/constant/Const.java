@@ -59,9 +59,15 @@ public final class Const {
 	public final static int COLUMN_TOP_CATEGORY_ID = 0;
 
 	/**
-	 * 后台文件存放文件夹，
+	 * 后台文件存放文件夹，通过拦截器赋值
+	 * @see com.mingsoft.basic.interceptor.ActionInterceptor
 	 */
-	@Deprecated
-	public  static String VIEW = "/manager";
+	public  static String VIEW = "";
+	
+	/**
+	 * 上传路径地址，通过拦截器赋值
+	 * @see com.mingsoft.basic.interceptor.ActionInterceptor
+	 */
+	public  static String UPLOAD_PATH = "";
 	
 }

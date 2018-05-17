@@ -49,6 +49,9 @@ public class ActionInterceptor extends BaseInterceptor {
 
 	@Value("${managerViewPath}")
 	private String managerViewPath;
+	
+	@Value("${upload.floder.path}")
+	private String uploadFloderPath;
 
 	/**
 	 * 所有action的拦截,主要拦截base与basepath
@@ -74,6 +77,7 @@ public class ActionInterceptor extends BaseInterceptor {
 			request.getSession().setAttribute(SessionConstEnum.MODEL_NAME_SESSION.toString(), request.getParameter("modelName"));
 		}
 		com.mingsoft.basic.constant.Const.VIEW = this.managerViewPath;
+		com.mingsoft.basic.constant.Const.UPLOAD_PATH = this.uploadFloderPath;
 		String base = request.getScheme() + "://" + request.getServerName()
 				+ (request.getServerPort() == 80 ? "" : ":" + request.getServerPort());
 		request.setAttribute(BASE_MANAGER_PATH, managerPath);
