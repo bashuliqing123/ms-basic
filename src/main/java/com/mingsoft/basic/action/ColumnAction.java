@@ -177,7 +177,9 @@ public class ColumnAction extends BaseAction{
 	public void delete(HttpServletResponse response, HttpServletRequest request) {
 		int[] ids = BasicUtil.getInts("ids", ",");
 		for(int i=0;i<ids.length;i++){
-			columnBiz.deleteCategory(ids[i]);
+			if(columnBiz.getEntity(ids[i]) != null){
+			    columnBiz.deleteCategory(ids[i]);
+			}
 		}
 		this.outJson(response, true);
 	}
