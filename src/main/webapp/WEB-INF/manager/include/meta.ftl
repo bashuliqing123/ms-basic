@@ -1,5 +1,5 @@
   <base target="mainFrame" />
-  <#assign static="${base}">
+  <#assign static="${basePath}/static">
   <#setting url_escaping_charset='utf-8'> 
   <#assign bootstrap="3.3.5">
   <#assign manager_ui="4.6.4">
