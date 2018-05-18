@@ -39,7 +39,7 @@
 	<!-- oracle添加 开始 -->
 	<insert id="saveEntity" useGeneratedKeys="false" parameterType="com.mingsoft.basic.entity.RoleEntity" databaseId="oracle">
 		<selectKey resultType="Integer"  keyProperty="roleId" order="BEFORE">
-			select seq_rolec_id.nextval as roleId from dual
+			select seq_role_id.nextval as roleId from dual
 		</selectKey>
 		insert into role
 		<!-- 添加表字段 -->
@@ -116,7 +116,7 @@
 	</delete>
 	<!--根据实体获取-->
 	<sql id="getRoleWhere">
-		<if test="roleName != null and roleName != ''"> and ROLE_NAME=#{roleName} </if>				
+		<if test="roleName != null and roleName != ''"> ROLE_NAME=#{roleName} </if>				
 		<if test="roleManagerId &gt; 0"> and ROLE_MANAGERID=#{roleManagerId} </if>				
 	</sql>
 	<!--mysql根据实体获取-->
@@ -132,7 +132,7 @@
 		select * from role 
 		<where>
 			<include refid="getRoleWhere"></include>
-			rownum = 1
+			and rownum = 1
 		</where>
 	</select>
 		<!--sqlServer根据实体获取-->
