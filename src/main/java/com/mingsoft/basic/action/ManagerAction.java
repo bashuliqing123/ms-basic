@@ -166,7 +166,6 @@ public class ManagerAction extends com.mingsoft.basic.action.BaseAction{
 		}
 		ManagerEntity managerEntity = (ManagerEntity)managerBiz.getEntity(manager.getManagerId());
 		managerEntity.setManagerPassword("");
-		model.addAttribute("managerId", manager.getManagerId());
 		this.outJson(response, managerEntity);
 	}
 	

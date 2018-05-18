@@ -153,8 +153,8 @@
 	<update id="updateEntity" parameterType="com.mingsoft.basic.entity.ManagerEntity">
 		update manager
 		<set>
-			<if test="managerName != null and managerName != ''">MANAGER_NAME=#{managerName},</if>
-			<if test="managerNickName != null and managerNickName != ''">MANAGER_NICKNAME=#{managerNickName},</if>
+			<if test="managerName != null">MANAGER_NAME=#{managerName},</if>
+			<if test="managerNickName != null">MANAGER_NICKNAME=#{managerNickName},</if>
 			<if test="managerPassword != null and managerPassword != ''">MANAGER_PASSWORD=#{managerPassword},</if>
 			<if test="managerRoleID != null and managerRoleID &gt; 0">MANAGER_ROLEID=#{managerRoleID},</if>
 			<if test="managerPeopleID != null and managerPeopleID &gt; 0">MANAGER_PEOPLEID=#{managerPeopleID},</if>
