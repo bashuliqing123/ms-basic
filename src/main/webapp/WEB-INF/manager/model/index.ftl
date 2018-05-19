@@ -22,7 +22,7 @@
 		<@ms.modalBody height="350">
 			<@ms.form isvalidation=true name="addEditForm"  action="" method="post"  >
 				<@ms.formRow label="父级菜单">
-					<@ms.treeInput treeId="modelInputTree" json="${parentModelList?default('')}" jsonId="modelId" jsonPid="modelModelId" jsonName="modelTitle"  addNodesName="顶级模块" buttonText="顶级模块" inputName="modelModelId" inputValue="0"  expandAll="true" showIcon="true"/>
+					<@ms.treeInput treeId="modelInputTree" json="${parentModelList?default('')}" jsonId="modelId" jsonPid="modelModelId" jsonName="modelTitle"  addNodesName="顶级模块" buttonText="顶级模块" inputName="modelModelId" inputValue="0" clickZtreeId="clickZtreeId(event,treeId,treeNode);" expandAll="true" showIcon="true"/>
 				</@ms.formRow>
 				<@ms.text name="modelTitle" label="标题" title="模块标题" placeholder="请输入模块标题" value="" validation={"required":"true", "data-bv-notempty-message":"请输入模块标题!","data-bv-stringlength":"true","minlength":"1","maxlength":"10","data-bv-stringlength-message":"模块标题为1-10个字符!"} />
 				<@ms.text name="modelCode"  label="编码" title="模块编码" placeholder="请输入模块编码" value="" validation={"required":"true", "data-bv-notempty-message":"请输入模块编码!","data-bv-stringlength":"true","minlength":"8","maxlength":"8","data-bv-stringlength-message":"模块编码为8位数字!","data-bv-regexp":"true","data-bv-regexp-regexp":'^[0-9]+$',"data-bv-regexp-message":"模块编码只能为数字!"} />
@@ -237,4 +237,11 @@
        	}  
    	 	$("#modelList").bootstrapTable('refresh', {query:$("form[name='searchForm']").serializeJSON()});
 	}
+	//排除添加功能按钮
+	function clickZtreeId(event,treeId,treeNode){
+		if (treeNode.modelIsMenu==0) {
+			<@ms.notify msg= "不能将功能按钮添加为菜单" type= "danger" />
+			return false;
+		} 
+	} 
 </script>
