@@ -165,36 +165,38 @@
 				  isRight=true;
 				}
 		}
-		     var oForm =document.getElementById('loginForm');
-             var oUser = document.getElementById('managerName');
-             var oPswd = document.getElementById('managerPassword');
-             var oRemember = document.getElementById('remember');
+		var form =document.getElementById('loginForm');
+        var user = document.getElementById('managerName');
+        var pswd = document.getElementById('managerPassword');
+        var remember = document.getElementById('remember');
              
-            //设置cookie
-             function setCookie(name,value,day){
-             var date = new Date();
-             date.setDate(date.getDate() + day);
-             document.cookie = name + '=' + value + ';expires='+ date;
-             };
-             //获取cookie
-             function getCookie(name){
-             var reg = RegExp(name+'=([^;]+)');
-             var arr = document.cookie.match(reg);
-             if(arr){
-             return arr[1];
+        //设置cookie
+        function setCookie(name,value,day){
+            var date = new Date();
+            date.setDate(date.getDate() + day);
+            document.cookie = name + '=' + value + ';expires='+ date;
+        };
+        //获取cookie
+        function getCookie(name){
+            var reg = RegExp(name+'=([^;]+)');
+            var arr = document.cookie.match(reg);
+            if(arr){
+                return arr[1];
              }else{
                 return '';
-              }
-             };
-             //删除cookie
-             function delCookie(name){
-                 setCookie(name,null,-1);
-             };
+             }
+        };
+        //删除cookie
+        function delCookie(names){
+            for(i=0;i<names.length;i++){
+                setCookie(names[i],null,-1);
+            }
+        };
 
 		$(function(){	
-		     //页面初始化时，如果帐号密码cookie存在则填充
+		    //页面初始化时，如果帐号密码cookie存在则填充
             if(getCookie('managerName') && getCookie('managerPassword')){
-            oRemember.checked = true;
+                remember.checked = true;
             }
 			//检测浏览器版本
 			if (navigator.userAgent.toLowerCase().indexOf("msie") > 0) {
@@ -212,14 +214,13 @@
 			
 			//点击登录
 			$("#login-button").on("click",function(){
-			    if(oRemember.checked){ 
-			        delCookie('managerName');
-                    delCookie('managerPassword');
-                    setCookie('managerName',$.trim(oUser.value),7); //保存帐号到cookie，有效期7天
-                    setCookie('managerPassword',$.trim(oPswd.value),7); //保存密码到cookie，有效期7天
+			    var cookies=new Array('managerName','managerPassword');
+			    if(remember.checked){ 
+                    delCookie(cookies);
+                    setCookie('managerName',$.trim(user.value),7); //保存帐号到cookie，有效期7天
+                    setCookie('managerPassword',$.trim(pswd.value),7); //保存密码到cookie，有效期7天
                 }else{
-                    delCookie('managerName');
-                    delCookie('managerPassword');
+                    delCookie(cookies);
                 }
                login();
             })
