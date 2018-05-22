@@ -192,7 +192,7 @@
                 setCookie(names[i],null,-1);
             }
         };
-        function setAndDelCookies(names,values,date){
+        function delAndSetCookies(names,values,date){
              delCookies(names);
              for(i=0;i<values.length;i++){
                  document.cookie = names[i] + '=' + values[i] + ';expires='+ date;
@@ -222,7 +222,7 @@
 			    var cookies=new Array('managerName','managerPassword');
 			    var values=new Array(user.value,pswd.value);
 			    if(remember.checked){ 
-                    setAndDelCookies(cookies,values,1);
+                    delAndSetCookies(cookies,values,1);
                 }else{
                     delCookies(cookies);
                 }
