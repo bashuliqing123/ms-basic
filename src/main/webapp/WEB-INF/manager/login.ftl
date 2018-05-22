@@ -212,7 +212,7 @@
 			
 			//点击登录
 			$("#login-button").on("click",function(){
-			    if(remember.checked){ 
+			    if(oRemember.checked){ 
 			        delCookie('managerName');
                     delCookie('managerPassword');
                     setCookie('managerName',$.trim(oUser.value),7); //保存帐号到cookie，有效期7天
