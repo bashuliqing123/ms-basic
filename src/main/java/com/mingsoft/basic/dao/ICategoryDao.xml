@@ -231,15 +231,15 @@
 
 	<!-- forMySql -->
 	<sql id="queryCateGoryWhere" databaseId="mysql">
-	    and CATEGORY_TITLE  like CONCAT('%',#{appUrl},'%')
+	    and CATEGORY_TITLE  like CONCAT('%',#{categoryTitle},'%')
 	</sql>
 	<!-- forOracle -->
 	<sql id="queryCateGoryWhere" databaseId="oracle">
-	    and CATEGORY_TITLE like '%'||#{ appUrl}||'%'
+	    and CATEGORY_TITLE like '%'||#{categoryTitle}||'%'
 	</sql>
 	<!-- forSqlServer -->
 	<sql id="queryCateGoryWhere" databaseId="sqlServer">
-	    and CATEGORY_TITLE like '%'+#{ appUrl}+'%'
+	    and CATEGORY_TITLE like '%'+#{categoryTitle}+'%'
 	</sql>
 	<!-- 查询开始 -->
 	<select id="query" resultMap="resultMap"
