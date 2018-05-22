@@ -217,8 +217,8 @@
 			    var cookies=new Array('managerName','managerPassword');
 			    if(remember.checked){ 
                     delCookie(cookies);
-                    setCookie('managerName',$.trim(user.value),7); //保存帐号到cookie，有效期7天
-                    setCookie('managerPassword',$.trim(pswd.value),7); //保存密码到cookie，有效期7天
+                    setCookie('managerName',$.trim(user.value),1); //保存帐号到cookie，有效期1天
+                    setCookie('managerPassword',$.trim(pswd.value),1); //保存密码到cookie，有效期1天
                 }else{
                     delCookie(cookies);
                 }
