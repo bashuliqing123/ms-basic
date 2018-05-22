@@ -8,6 +8,7 @@
 <script type="text/javascript" src="http://cdn.mingsoft.net/plugins/vue/2.3.3/vue.min.js"></script>
 <script type="text/javascript" src="http://cdn.mingsoft.net/plugins/validator/5.5.0/validator.min.js"></script>
 <link rel="stylesheet/less" type="text/css" href="${static}/skin/manager/${manager_ui}/less/login.less" media="all" />
+<script type="text/javascript" src="${static}/skin/manager/${manager_ui}/js/encryption.js" ></script>
 <script type="text/javascript" src="http://cdn.mingsoft.net/plugins/less/2.5.3/less.min.js" ></script>
 <script>
 			if(top.location != location){  
@@ -32,10 +33,10 @@
 					<span v-text="errorText" v-show="errorText != ''"></span>
 				</div>
                 <form class="form-horizontal" id="loginForm" action="${managerPath}/checkLogin.do">
-                    <input type="text" maxlength="12" class="login-people-name" :class="{'ms-error':error == 'peopleName'}" name="managerName" @blur="checkPeopleName" placeholder="用户名" v-model="peopleName" />
-                    <input type="password" maxlength="20" class="login-people-name" :class="{'ms-error':error == 'peoplePassword'}" name="managerPassword" @blur="checkPeoplePassword" placeholder="密码" v-model="peoplePassword" />
+                    <input type="text" maxlength="12" class="login-people-name" :class="{'ms-error':error == 'peopleName'}" id="managerName" name="managerName" @blur="checkPeopleName" placeholder="用户名" v-model="peopleName" />
+                    <input type="password" maxlength="20" class="login-people-name" :class="{'ms-error':error == 'peoplePassword'}" id="managerPassword" name="managerPassword" @blur="checkPeoplePassword" placeholder="密码" v-model="peoplePassword" />
                     <div class="login-code">
-                        <input type="text" class="login-float login-code-input" :class="{'ms-error':error == 'rand_code'}" name="rand_code" @blur="checkCode" placeholder="验证码" v-model="code" />
+                        <input type="text" maxlength="4" class="login-float login-code-input" :class="{'ms-error':error == 'rand_code'}" name="rand_code" @blur="checkCode" placeholder="验证码" v-model="code" />
                         <img id="ms-login-code" class="login-code-img login-float" src="${basePath}/code" @click="changeCode"/>
                         <p class="login-float login-code-text">
                             <span>看不清?</span><br/>
@@ -43,7 +44,7 @@
                         </p>
                     </div>
                     <p class="login-remmember-password">
-                        <input type="checkbox" name="" />
+                        <input id="remember" type="checkbox" name="" />
                         <span>记住密码</span>
                     </p>
                     <div  id="login-button" class="login-button">登录</div>
@@ -58,8 +59,8 @@
             data:{
                 errorText:"",//错误提示
                 error:"",//输入框错误的显示
-                peopleName:"",//用户名输入框
-                peoplePassword:"",//密码输入框
+                peopleName:getCookie('managerName'),//用户名输入框
+                peoplePassword:getCookie('managerPassword'),//密码输入框
 				code:"",//验证码
             },
             watch: {
@@ -164,8 +165,37 @@
 				  isRight=true;
 				}
 		}
-			
+		     var oForm =document.getElementById('loginForm');
+             var oUser = document.getElementById('managerName');
+             var oPswd = document.getElementById('managerPassword');
+             var oRemember = document.getElementById('remember');
+             
+            //设置cookie
+             function setCookie(name,value,day){
+             var date = new Date();
+             date.setDate(date.getDate() + day);
+             document.cookie = name + '=' + value + ';expires='+ date;
+             };
+             //获取cookie
+             function getCookie(name){
+             var reg = RegExp(name+'=([^;]+)');
+             var arr = document.cookie.match(reg);
+             if(arr){
+             return arr[1];
+             }else{
+                return '';
+              }
+             };
+             //删除cookie
+             function delCookie(name){
+                 setCookie(name,null,-1);
+             };
+
 		$(function(){	
+		     //页面初始化时，如果帐号密码cookie存在则填充
+            if(getCookie('managerName') && getCookie('managerPassword')){
+            oRemember.checked = true;
+            }
 			//检测浏览器版本
 			if (navigator.userAgent.toLowerCase().indexOf("msie") > 0) {
 				    alert("您当前的浏览器版本太低，建议使用IE8以上版本浏览器，推荐使用Chrome浏览器");
@@ -182,10 +212,19 @@
 			
 			//点击登录
 			$("#login-button").on("click",function(){
+			    if(remember.checked){ 
+			        delCookie('managerName');
+                    delCookie('managerPassword');
+                    setCookie('managerName',$.trim(oUser.value),7); //保存帐号到cookie，有效期7天
+                    setCookie('managerPassword',$.trim(oPswd.value),7); //保存密码到cookie，有效期7天
+                }else{
+                    delCookie('managerName');
+                    delCookie('managerPassword');
+                }
                login();
-            });	
+            })
 			
-		})
+		});
 	</script>
    
 </html>
