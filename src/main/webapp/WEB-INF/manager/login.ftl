@@ -187,12 +187,17 @@
              }
         };
         //删除cookie
-        function delCookie(names){
+        function delCookies(names){
             for(i=0;i<names.length;i++){
                 setCookie(names[i],null,-1);
             }
         };
-
+        function setAndDelCookies(names,values,date){
+             delCookies(names);
+             for(i=0;i<values.length;i++){
+                 document.cookie = names[i] + '=' + values[i] + ';expires='+ date;
+             }
+        }
 		$(function(){	
 		    //页面初始化时，如果帐号密码cookie存在则填充
             if(getCookie('managerName') && getCookie('managerPassword')){
@@ -215,12 +220,11 @@
 			//点击登录
 			$("#login-button").on("click",function(){
 			    var cookies=new Array('managerName','managerPassword');
+			    var values=new Array(user.value,pswd.value);
 			    if(remember.checked){ 
-                    delCookie(cookies);
-                    setCookie('managerName',$.trim(user.value),1); //保存帐号到cookie，有效期1天
-                    setCookie('managerPassword',$.trim(pswd.value),1); //保存密码到cookie，有效期1天
+                    setAndDelCookies(cookies,values,1);
                 }else{
-                    delCookie(cookies);
+                    delCookies(cookies);
                 }
                login();
             })
