@@ -165,7 +165,7 @@
 				  isRight=true;
 				}
 		}
-		var form =document.getElementById('loginForm');
+		
         var user = document.getElementById('managerName');
         var pswd = document.getElementById('managerPassword');
         var remember = document.getElementById('remember');
