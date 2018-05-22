@@ -35,7 +35,7 @@
                     <input type="text" maxlength="12" class="login-people-name" :class="{'ms-error':error == 'peopleName'}" id="managerName" name="managerName" @blur="checkPeopleName" placeholder="用户名" v-model="peopleName" />
                     <input type="password" maxlength="20" class="login-people-name" :class="{'ms-error':error == 'peoplePassword'}" id="managerPassword" name="managerPassword" @blur="checkPeoplePassword" placeholder="密码" v-model="peoplePassword" />
                     <div class="login-code">
-                        <input type="text" maxlength="4" class="login-float login-code-input" :class="{'ms-error':error == 'rand_code'}" name="rand_code" @blur="checkCode" placeholder="验证码" v-model="code" />
+                        <input type="text" onKeyUp ="value=value.replace(/[\W]/g,'')" maxlength="4" class="login-float login-code-input" :class="{'ms-error':error == 'rand_code'}" id="rand_code" name="rand_code" @blur="checkCode" placeholder="验证码" v-model="code" />
                         <img id="ms-login-code" class="login-code-img login-float" src="${basePath}/code" @click="changeCode"/>
                         <p class="login-float login-code-text">
                             <span>看不清?</span><br/>
@@ -46,7 +46,7 @@
                         <input id="remember" type="checkbox" name="" />
                         <span>记住密码</span>
                     </p>
-                    <div  id="login-button" class="login-button">登录</div>
+                    <div  id="login-button" class="login-button" >登录</div>
                 </form>
             </div>
         </div>
@@ -152,22 +152,26 @@
 		function login(){
 		        loginForm.login();
 		        if(isRight){
+		            $("#login-button").text("正在登录");
 				    $(this).postForm("#loginForm",{loadingText:"正在登录中..",func:function(data) {
     				    if(data.result){
     					location.href=base+"${baseManager}/index.do";
     				        }else{
     					alert(data.resultMsg);
+    					$("#login-button").text("登录");
     					
 				    }
 				    }});
 				}else{
 				  isRight=true;
+				 
 				}
 		}
 		
         var user = document.getElementById('managerName');
         var pswd = document.getElementById('managerPassword');
         var remember = document.getElementById('remember');
+        var code = document.getElementById('rand_code');
              
         //设置cookie
         function setCookie(name,value,day){
@@ -197,7 +201,24 @@
                  document.cookie = names[i] + '=' + values[i] + ';expires='+ date;
              }
         }
+        function chanageBackgroundImage(){
+            if(user.value.length >= 3 &&　pswd.value.length >= 6 && code.value.length == 4){
+                    $("#login-button").css({"background-image":"url(${static}/skin/manager/${manager_ui}/images/button.png)"});
+                }else{
+                     $("#login-button").css({"background-image":"url(${static}/skin/manager/${manager_ui}/images/button_gray.png)"});
+                }
+        }
 		$(function(){	
+	        $("#managerPassword").keyup(function(){
+                chanageBackgroundImage();
+            });
+            $("#managerName").keyup(function(){
+                chanageBackgroundImage();
+            });
+            $("#rand_code").keyup(function(){
+                chanageBackgroundImage();
+            });
+            
 		    //页面初始化时，如果帐号密码cookie存在则填充
             if(getCookie('managerName') && getCookie('managerPassword')){
                 remember.checked = true;
