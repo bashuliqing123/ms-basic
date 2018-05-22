@@ -8,7 +8,6 @@
 <script type="text/javascript" src="http://cdn.mingsoft.net/plugins/vue/2.3.3/vue.min.js"></script>
 <script type="text/javascript" src="http://cdn.mingsoft.net/plugins/validator/5.5.0/validator.min.js"></script>
 <link rel="stylesheet/less" type="text/css" href="${static}/skin/manager/${manager_ui}/less/login.less" media="all" />
-<script type="text/javascript" src="${static}/skin/manager/${manager_ui}/js/encryption.js" ></script>
 <script type="text/javascript" src="http://cdn.mingsoft.net/plugins/less/2.5.3/less.min.js" ></script>
 <script>
 			if(top.location != location){  
