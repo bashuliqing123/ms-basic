@@ -20,6 +20,7 @@
 	.gray{background:#92908E}
 </style>
 <body>
+asdasdas
         <div id="mcms-login">
             <img src="${static}/skin/manager/${manager_ui}/images/pic.png" class="login-images login-float" />
             <div class="login-form-container login-float">
@@ -42,9 +43,9 @@
                             <spna class="login-code-change" @click="changeCode">换一张</span>
                         </p>
                     </div>
-                    <p class="login-remmember-password">
+                    <p  class="login-remmember-password">
                         <input id="remember" type="checkbox" name="" />
-                        <span>记住密码</span>
+                        <label class="login-remember" for="remember">记住密码</label>
                     </p>
                     <div  id="login-button" class="login-button" >登录</div>
                 </form>
@@ -58,8 +59,8 @@
             data:{
                 errorText:"",//错误提示
                 error:"",//输入框错误的显示
-                peopleName:getCookie('managerName'),//用户名输入框
-                peoplePassword:getCookie('managerPassword'),//密码输入框
+                peopleName:$.cookie('managerName'),//用户名输入框
+                peoplePassword:$.cookie('managerPassword'),//密码输入框
 				code:"",//验证码
             },
             watch: {
@@ -168,41 +169,21 @@
 				}
 		}
 		
-        var user = document.getElementById('managerName');
-        var pswd = document.getElementById('managerPassword');
-        var remember = document.getElementById('remember');
-        var code = document.getElementById('rand_code');
-             
-        //设置cookie
-        function setCookie(name,value,day){
-            var date = new Date();
-            date.setDate(date.getDate() + day);
-            document.cookie = name + '=' + value + ';expires='+ date;
-        };
-        //获取cookie
-        function getCookie(name){
-            var reg = RegExp(name+'=([^;]+)');
-            var arr = document.cookie.match(reg);
-            if(arr){
-                return arr[1];
-             }else{
-                return '';
-             }
-        };
-        //删除cookie
+       
+        //删除cookies
         function delCookies(names){
             for(i=0;i<names.length;i++){
-                setCookie(names[i],null,-1);
+                $.cookie(names[i],null,-1);
             }
         };
         function delAndSetCookies(names,values,date){
              delCookies(names);
              for(i=0;i<values.length;i++){
-                 document.cookie = names[i] + '=' + values[i] + ';expires='+ date;
+                $.cookie(names[i], values[i], { expires: date });
              }
         }
         function chanageBackgroundImage(){
-            if(user.value.length >= 3 &&　pswd.value.length >= 6 && code.value.length == 4){
+            if($("#managerName").val().length >= 3 &&　$("#managerPassword").val().length >= 6 && $("#rand_code").val().length == 4){
                     $("#login-button").css({"background-color":"#0099ff"});
                 }else{
                      $("#login-button").css({"background-color":"#eeeeee"});
@@ -218,10 +199,10 @@
             $("#rand_code").keyup(function(){
                 chanageBackgroundImage();
             });
-            
+          
 		    //页面初始化时，如果帐号密码cookie存在则填充
-            if(getCookie('managerName') && getCookie('managerPassword')){
-                remember.checked = true;
+            if($.cookie('managerName') && $.cookie('managerPassword')){
+                $("#remember").attr("checked",true);
             }
 			//检测浏览器版本
 			if (navigator.userAgent.toLowerCase().indexOf("msie") > 0) {
@@ -239,12 +220,12 @@
 			
 			//点击登录
 			$("#login-button").on("click",function(){
-			    var cookies=new Array('managerName','managerPassword');
-			    var values=new Array(user.value,pswd.value);
-			    if(remember.checked){ 
-                    delAndSetCookies(cookies,values,1);
+			    var names=new Array('managerName','managerPassword');
+			    var values=new Array($("#managerName").val(),$("#managerPassword").val());
+			    if($("#remember").is(":checked")){ 
+                    delAndSetCookies(names,values,1);
                 }else{
-                    delCookies(cookies);
+                    delCookies(names);
                 }
                login();
             })
