@@ -230,16 +230,16 @@
 	</select>
 
 	<!-- forMySql -->
-	<sql id="queryCateGoryWhere" databaseId="mysql">
-	    and CATEGORY_TITLE  like CONCAT('%',#{appUrl},'%')
+	<sql id="queryCategoryWhere" databaseId="mysql">
+	    and CATEGORY_TITLE  like CONCAT('%',#{categoryTitle},'%')
 	</sql>
 	<!-- forOracle -->
-	<sql id="queryCateGoryWhere" databaseId="oracle">
-	    and CATEGORY_TITLE like '%'||#{ appUrl}||'%'
+	<sql id="queryCategoryWhere" databaseId="oracle">
+	    and CATEGORY_TITLE like '%'||#{categoryTitle}||'%'
 	</sql>
 	<!-- forSqlServer -->
-	<sql id="queryCateGoryWhere" databaseId="sqlServer">
-	    and CATEGORY_TITLE like '%'+#{ appUrl}+'%'
+	<sql id="queryCategoryWhere" databaseId="sqlServer">
+	    and CATEGORY_TITLE like '%'+#{categoryTitle}+'%'
 	</sql>
 	<!-- 查询开始 -->
 	<select id="query" resultMap="resultMap"
@@ -261,7 +261,7 @@
 		</if>
 		    and del=0
 		<if test="categoryTitle != null and categoryTitle != ''"> 
-		     <include refid="queryCateGoryWhere"></include>
+		     <include refid="queryCategoryWhere"></include>
 		</if>
 		order by category_id desc
 	</select>

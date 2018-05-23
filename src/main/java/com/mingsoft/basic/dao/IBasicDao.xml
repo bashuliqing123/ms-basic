@@ -164,7 +164,7 @@
 		<include refid="column_list" />
 		from 
 		<if  test=" end !=null ">
-			( SELECT b.*, ROWNUM RN FROM ( SELECT * FROM basic) b WHERE ROWNUM &lt;= #{end} )
+			( SELECT b.*, ROWNUM RN FROM ( SELECT * FROM basic <include refid="queryBasicOrderby"></include>) b WHERE ROWNUM &lt;= #{end} )
 		</if>
 		<if  test=" end == null ">
 			basic
@@ -178,7 +178,7 @@
 				and RN &gt; #{begin}
 			</if>
 		</where>
-			<include refid="queryBasicOrderby"></include>
+			
 	</select>
 	<!-- SqlServer分页 -->
 	<select id="query" resultMap="resultMap" parameterType="int" databaseId="sqlServer">
