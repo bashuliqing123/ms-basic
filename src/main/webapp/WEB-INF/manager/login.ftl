@@ -203,9 +203,9 @@
         }
         function chanageBackgroundImage(){
             if(user.value.length >= 3 &&　pswd.value.length >= 6 && code.value.length == 4){
-                    $("#login-button").css({"background-image":"url(${static}/skin/manager/${manager_ui}/images/button.png)"});
+                    $("#login-button").css({"background-color":"#0099ff"});
                 }else{
-                     $("#login-button").css({"background-image":"url(${static}/skin/manager/${manager_ui}/images/button_gray.png)"});
+                     $("#login-button").css({"background-color":"#eeeeee"});
                 }
         }
 		$(function(){	
