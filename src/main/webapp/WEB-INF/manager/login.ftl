@@ -20,7 +20,6 @@
 	.gray{background:#92908E}
 </style>
 <body>
-asdasdas
         <div id="mcms-login">
             <img src="${static}/skin/manager/${manager_ui}/images/pic.png" class="login-images login-float" />
             <div class="login-form-container login-float">
@@ -173,7 +172,7 @@ asdasdas
         //删除cookies
         function delCookies(names){
             for(i=0;i<names.length;i++){
-                $.cookie(names[i],null,-1);
+                $.cookie(names[i],null,{ expires: -1 });
             }
         };
         function delAndSetCookies(names,values,date){
