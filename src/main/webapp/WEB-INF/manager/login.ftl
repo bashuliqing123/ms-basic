@@ -46,7 +46,7 @@
                         <input id="remember" type="checkbox" name="" />
                         <label class="login-remember" for="remember">记住密码</label>
                     </p>
-                    <div  id="login-button" class="login-button" >登录</div>
+                    <div  id="login-button" class="login-button" onclick="toLogin()">登录</div>
                 </form>
             </div>
         </div>
@@ -153,13 +153,14 @@
 		        loginForm.login();
 		        if(isRight){
 		            $("#login-button").text("正在登录");
+		            $("#login-button").removeAttr("onclick");
 				    $(this).postForm("#loginForm",{loadingText:"正在登录中..",func:function(data) {
     				    if(data.result){
     					location.href=base+"${baseManager}/index.do";
     				        }else{
     					alert(data.resultMsg);
     					$("#login-button").text("登录");
-    					
+    					$("#login-button").attr("onclick","toLogin();");
 				    }
 				    }});
 				}else{
@@ -216,9 +217,9 @@
 					login(); 
 				}
 			}
-			
-			//点击登录
-			$("#login-button").on("click",function(){
+		});
+				//点击登录
+	   function toLogin(){
 			    var names=new Array('managerName','managerPassword');
 			    var values=new Array($("#managerName").val(),$("#managerPassword").val());
 			    if($("#remember").is(":checked")){ 
@@ -227,9 +228,7 @@
                     delCookies(names);
                 }
                login();
-            })
-			
-		});
+            }
 	</script>
    
 </html>
