@@ -20,6 +20,7 @@
 	.gray{background:#92908E}
 </style>
 <body>
+        <#if app?has_content>
         <div id="mcms-login">
             <img src="${static}/skin/manager/${manager_ui}/images/pic.png" class="login-images login-float" />
             <div class="login-form-container login-float">
@@ -50,7 +51,13 @@
                 </form>
             </div>
         </div>
+        <#else>
+
+        	<h1>系统配置异常，请手动去掉WEB-INF/ms.install.bak文件的后缀.bak，再重启系统进入登录界面进行初始化</h1>
+
+        </#if>
     </body>
+   
 	<script>
 	    
         var loginForm = new Vue({
