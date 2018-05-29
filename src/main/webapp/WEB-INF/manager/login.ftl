@@ -32,10 +32,10 @@
 					<span v-text="errorText" v-show="errorText != ''"></span>
 				</div>
                 <form class="form-horizontal" id="loginForm" action="${managerPath}/checkLogin.do">
-                    <input type="text" maxlength="12" class="login-people-name" :class="{'ms-error':error == 'peopleName'}" id="managerName" name="managerName" @blur="checkPeopleName" placeholder="用户名" v-model="peopleName" />
-                    <input type="password" maxlength="20" class="login-people-name" :class="{'ms-error':error == 'peoplePassword'}" id="managerPassword" name="managerPassword" @blur="checkPeoplePassword" placeholder="密码" v-model="peoplePassword" />
+                    <input type="text" maxlength="12" class="login-people-name" :class="{'ms-error':error == 'peopleName'}" id="managerName" name="managerName" @blur="checkPeopleName" @keyup="chanageBackgroundColor" placeholder="用户名" v-model="peopleName" />
+                    <input type="password" maxlength="20" class="login-people-name" :class="{'ms-error':error == 'peoplePassword'}" id="managerPassword" name="managerPassword" @blur="checkPeoplePassword" @keyup="chanageBackgroundColor" placeholder="密码" v-model="peoplePassword" />
                     <div class="login-code">
-                        <input type="text" onKeyUp ="value=value.replace(/[\W]/g,'')" maxlength="4" class="login-float login-code-input" :class="{'ms-error':error == 'rand_code'}" id="rand_code" name="rand_code" @blur="checkCode" placeholder="验证码" v-model="code" />
+                        <input type="text" onKeyUp ="value=value.replace(/[\W]/g,'')" maxlength="4" class="login-float login-code-input" :class="{'ms-error':error == 'rand_code'}" id="rand_code" name="rand_code" @blur="checkCode" @keyup="chanageBackgroundColor" placeholder="验证码" v-model="code" />
                         <img id="ms-login-code" class="login-code-img login-float" src="${basePath}/code" @click="changeCode"/>
                         <p class="login-float login-code-text">
                             <span>看不清?</span><br/>
@@ -46,21 +46,23 @@
                         <input id="remember" type="checkbox" name="" />
                         <label class="login-remember" for="remember">记住密码</label>
                     </p>
-                    <div  id="login-button" class="login-button" onclick="toLogin()">登录</div>
+                    <div  id="login-button" class="login-button" @click="toLogin">{{loginText}}</div>
                 </form>
             </div>
         </div>
     </body>
 	<script>
-	    var isRight = true;
+	    
         var loginForm = new Vue({
             el:'#mcms-login',
             data:{
+                isRight: true,
                 errorText:"",//错误提示
                 error:"",//输入框错误的显示
                 peopleName:$.cookie('managerName'),//用户名输入框
                 peoplePassword:$.cookie('managerPassword'),//密码输入框
 				code:"",//验证码
+				loginText:"登录",
             },
             watch: {
 				peopleName: function() {
@@ -83,6 +85,26 @@
 					}
 				}
 			},
+			mounted: function() {
+			      var _this = this;
+		          //页面初始化时，如果帐号密码cookie存在则填充
+                  if($.cookie('managerName') && $.cookie('managerPassword')){
+                      $("#remember").attr("checked",true);
+                  }
+			      //检测浏览器版本
+			      if (navigator.userAgent.toLowerCase().indexOf("msie") > 0) {
+			      	    alert("您当前的浏览器版本太低，建议使用IE8以上版本浏览器，推荐使用Chrome浏览器");
+			      }
+			      
+			      //js监听回车键 
+			      document.onkeydown = function(e) {
+			      	e = e ? e : window.event;
+			      	var keyCode = e.which ? e.which : e.keyCode;
+			      	if (keyCode == 13) {
+			      		_this.login(); 
+			      	}
+			      }
+			},
             methods:{
                 //错误提示显示
                 errorShow:function(msg,type){
@@ -97,19 +119,19 @@
                     var pattern = /[^\w\u4E00-\u9FA5]/ig;
 					if(validator.isNull(this.peopleName)){
 						this.errorShow("用户名不能为空",'peopleName');
-						isRight = false;
+						this.isRight = false;
 						return;
 					}else if(this.peopleName.indexOf(" ") >= 0) {
 						this.errorShow("用户名不能包含空格",'peopleName');
-						isRight = false;
+						this.isRight = false;
 						return;
 					}else if(!validator.isLength(this.peopleName, {min:3,max:12})){
 						this.errorShow("用户名为3~12个字符",'peopleName');
-						isRight = false;
+						this.isRight = false;
 						return;
 					}else if(pattern.test(this.peopleName)){
                         this.errorShow("用户名不能包含特殊字符",'peopleName');
-                        isRight = false;
+                        this.isRight = false;
 						return;
                     }
                 },
@@ -117,15 +139,15 @@
                 checkPeoplePassword:function(){
                     if(validator.isNull(this.peoplePassword)){
 						this.errorShow("密码不能为空",'peoplePassword');
-						isRight = false;
+						this.isRight = false;
 						return;
 					}else if(!validator.isLength(this.peoplePassword, {min: 6,max: 20})){
 						this.errorShow("密码长度在6~20位之间!",'peoplePassword');
-						isRight = false;
+						this.isRight = false;
 						return;
 					}else if(this.peoplePassword.indexOf(" ") >=0){
                         this.errorShow("密码是不能包含空格",'peoplePassword');
-                        isRight = false;
+                        this.isRight = false;
 						return;
 					}
                 },
@@ -133,102 +155,79 @@
                 checkCode:function(){
                     if(validator.isNull(this.code)){
 						this.errorShow("验证码不能为空",'rand_code');
-						isRight = false;
+						this.isRight = false;
 						return;
 					}else if(this.code.length != 4){
 						this.errorShow("验证码为4位!",'rand_code');
-						isRight = false;
+						this.isRight = false;
 						return;
 					}
                 },
-                //登录
-                login:function(){
+                //登录判断验证
+                checkLogin:function(){
                     this.checkPeoplePassword();
                     this.checkPeopleName();
                     this.checkCode();
-                }
+                },
+                //验证登录数据
+                login:function(){
+                    loginForm.checkLogin();
+		            if(this.isRight){
+		                this.loginText ="正在登录";
+		                $("#login-button").removeAttr("onclick");
+				        $(this).postForm("#loginForm",{loadingText:"正在登录中..",func:function(data) {
+    				        if(data.result){
+    					    location.href=base+"${baseManager}/index.do";
+    				            }else{
+    					    alert(data.resultMsg);
+    					    this.loginText ="登录";
+    					    $("#login-button").attr("onclick","toLogin();");
+				        }
+				        }});
+				     }else{
+				         this.isRight=true;
+				        
+				          }
+                     },
+                   //删除cookies
+                delCookies: function(names){
+                     for(i=0;i<names.length;i++){
+                     $.cookie(names[i],null,{ expires: -1 });
+                     }
+                  },
+                  //删除并且修改cookies
+                delAndSetCookies: function(names,values,date){
+                     this.delCookies(names);
+                     for(i=0;i<values.length;i++){
+                        $.cookie(names[i], values[i], { expires: date });
+                     }
+                  },
+                  //改变登录按钮背景色
+                chanageBackgroundColor: function(){
+                     if($("#managerName").val().length >= 3 &&　$("#managerPassword").val().length >= 6 && $("#rand_code").val().length == 4){
+                         $("#login-button").css({"background-color":"#0099ff"});
+                     }else{
+                          $("#login-button").css({"background-color":"#eeeeee"});
+                     }
+                  },
+                  //点击登录方法
+                toLogin: function(){
+                     var names=new Array('managerName','managerPassword');
+			         var values=new Array($("#managerName").val(),$("#managerPassword").val());
+			         if($("#remember").is(":checked")){ 
+                         this.delAndSetCookies(names,values,1);
+                     }else{
+                         this.delCookies(names);
+                     }
+                         this.login();
+                     }
+                 
+                       
             }
-        })
-		function login(){
-		        loginForm.login();
-		        if(isRight){
-		            $("#login-button").text("正在登录");
-		            $("#login-button").removeAttr("onclick");
-				    $(this).postForm("#loginForm",{loadingText:"正在登录中..",func:function(data) {
-    				    if(data.result){
-    					location.href=base+"${baseManager}/index.do";
-    				        }else{
-    					alert(data.resultMsg);
-    					$("#login-button").text("登录");
-    					$("#login-button").attr("onclick","toLogin();");
-				    }
-				    }});
-				}else{
-				  isRight=true;
-				 
-				}
-		}
-		
-       
-        //删除cookies
-        function delCookies(names){
-            for(i=0;i<names.length;i++){
-                $.cookie(names[i],null,{ expires: -1 });
-            }
-        };
-        function delAndSetCookies(names,values,date){
-             delCookies(names);
-             for(i=0;i<values.length;i++){
-                $.cookie(names[i], values[i], { expires: date });
-             }
-        }
-        function chanageBackgroundImage(){
-            if($("#managerName").val().length >= 3 &&　$("#managerPassword").val().length >= 6 && $("#rand_code").val().length == 4){
-                    $("#login-button").css({"background-color":"#0099ff"});
-                }else{
-                     $("#login-button").css({"background-color":"#eeeeee"});
-                }
-        }
-		$(function(){	
-	        $("#managerPassword").keyup(function(){
-                chanageBackgroundImage();
-            });
-            $("#managerName").keyup(function(){
-                chanageBackgroundImage();
-            });
-            $("#rand_code").keyup(function(){
-                chanageBackgroundImage();
-            });
-          
-		    //页面初始化时，如果帐号密码cookie存在则填充
-            if($.cookie('managerName') && $.cookie('managerPassword')){
-                $("#remember").attr("checked",true);
-            }
-			//检测浏览器版本
-			if (navigator.userAgent.toLowerCase().indexOf("msie") > 0) {
-				    alert("您当前的浏览器版本太低，建议使用IE8以上版本浏览器，推荐使用Chrome浏览器");
-			}
+            
 			
-			//js监听回车键 
-			document.onkeydown = function(e) {
-				e = e ? e : window.event;
-				var keyCode = e.which ? e.which : e.keyCode;
-				if (keyCode == 13) {
-					login(); 
-				}
-			}
-		});
-				//点击登录
-	   function toLogin(){
-			    var names=new Array('managerName','managerPassword');
-			    var values=new Array($("#managerName").val(),$("#managerPassword").val());
-			    if($("#remember").is(":checked")){ 
-                    delAndSetCookies(names,values,1);
-                }else{
-                    delCookies(names);
-                }
-               login();
-            }
+        })
+		
 	</script>
    
 </html>
