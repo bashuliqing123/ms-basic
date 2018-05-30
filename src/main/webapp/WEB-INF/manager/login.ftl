@@ -52,8 +52,12 @@
             </div>
         </div>
         <#else>
-
-        	<h1>系统配置异常，请手动去掉WEB-INF/ms.install.bak文件的后缀.bak，再重启系统进入登录界面进行初始化</h1>
+            <div id="errorDisplay">
+        	    <img src="${static}/skin/manager/${manager_ui}/images/errorDisplay.png"/>
+        	    <div class="errorData">
+        	    <p >系统配置异常，请手动去掉WEB-INF/ms.install.bak文件的后缀.bak，再重启系统进入登录界面进行初始化</p>
+        	    </div>
+        	<div>
 
         </#if>
     </body>
