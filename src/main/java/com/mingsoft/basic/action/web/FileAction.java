@@ -203,7 +203,7 @@ public class FileAction extends BaseAction {
 								if(uploadPath.equals("/") || StringUtil.isBlank(uploadPath)){
 									out.print(floderName+_fileName);
 								}else{
-									out.print(floderName+uploadPath+Const.SEPARATOR + _fileName);
+									out.print(floderName+Const.SEPARATOR+uploadPath+Const.SEPARATOR + _fileName);
 								}
 								LOG.info("上传完成");
 							} else {
