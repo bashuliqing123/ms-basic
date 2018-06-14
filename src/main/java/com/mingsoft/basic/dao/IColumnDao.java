@@ -108,4 +108,5 @@ public interface IColumnDao extends IBaseDao {
 	 * @return 记录集合
 	 */
 	public List<ColumnEntity> queryByAppIdAndModelId(@Param("appId")int appId, @Param("modelId")int modelId);
+	
 }

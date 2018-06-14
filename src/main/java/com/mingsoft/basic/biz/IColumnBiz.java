@@ -89,7 +89,17 @@ public interface IColumnBiz extends ICategoryBiz {
 	 * @param modelId 模块信息
 	 * @return 记录集合
 	 */
+	@Deprecated
 	public List<ColumnEntity> queryAll(int appId,int modelId);
+	
+	
+	/**
+	 * 获取当前应用下面对应模块的所以栏目分类
+	 * @param appId 站点信息
+	 * @param modelId 模块信息
+	 * @return 记录集合
+	 */
+	public List<ColumnEntity> queryAll(int modelId);
 	
 	
 	/**
