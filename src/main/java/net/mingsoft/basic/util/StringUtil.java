@@ -1,9 +1,12 @@
 package net.mingsoft.basic.util;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Random;
 
 import com.alibaba.druid.util.StringUtils;
+
+import cn.hutool.core.util.ArrayUtil;
 
 public class StringUtil {
 	/**
@@ -65,34 +68,6 @@ public class StringUtil {
 			array[i] = Integer.parseInt(str[i]);
 		return array;
 	}
-	/**
-	 * 截取字符长度
-	 * 
-	 * @param str 需截取的字符串
-	 * @param length 截取长度
-	 * @return 返回截取后的字符串
-	 */
-	public static String subString(String str, int length) {
-		if (StringUtils.isEmpty(str))
-			return "";
-		if (str.getBytes().length <= length)
-			return str;
-		char ch[] = null;
-		if (str.length() >= length)
-			ch = str.substring(0, length).toCharArray();
-		else
-			ch = str.toCharArray();
-		int readLen = 0;
-		StringBuffer sb = new StringBuffer("");
-		for (int i = 0; i < ch.length; i++) {
-			String c = String.valueOf(ch[i]);
-			readLen += c.getBytes().length;
-			if (readLen > length)
-				return sb.toString();
-			sb.append(c);
-		}
-		return sb.toString();
-	}
 
 	/**
 	 * 程序内部字符串转码，将ISO-8859-1转换成utf-8
@@ -109,19 +84,7 @@ public class StringUtil {
 		}
 		return "";
 	}
-	/**
-	 * 将String型转换成Int型并判断String是否是NULL
-	 * 
-	 * @param str 字符串
-	 * @return 返回数字
-	 */
-	public static int string2Int(String str) {
-		int valueInt = 0;
-		if (!StringUtils.isEmpty(str)) {
-			valueInt = Integer.parseInt(str);
-		}
-		return valueInt;
-	}
+
 	/**
 	 * 字符串转double型数组
 	 * 
@@ -208,6 +171,18 @@ public class StringUtil {
 
 		}
 		return sb.toString();
+	}
+	/**
+	 * 降序排序
+	 * @param str
+	 * @param delimiter
+	 * 			分隔符
+	 * @return
+	 */
+	public static String sort(String str,String delimiter){
+		String[] articleTypeArrays = str.split(delimiter);
+		Arrays.sort(articleTypeArrays);
+		return ArrayUtil.join(articleTypeArrays, delimiter);
 	}
 
 
