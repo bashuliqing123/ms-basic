@@ -35,6 +35,8 @@ import com.mingsoft.basic.biz.IColumnBiz;
 import com.mingsoft.basic.dao.IColumnDao;
 import com.mingsoft.basic.entity.ColumnEntity;
 
+import net.mingsoft.basic.util.BasicUtil;
+
 /**
  * 
  * 
@@ -122,6 +124,9 @@ public class ColumnBizImpl extends CategoryBizImpl implements IColumnBiz {
 		return columnDao.queryByAppIdAndModelId(appId, modelId);
 	}
 
+	public List<ColumnEntity> queryAll(int modelId) {
+		return columnDao.queryByAppIdAndModelId(BasicUtil.getAppId(),modelId);
+	}
 
 	/**
 	 * 通过栏目的站点ID查询该站点下的栏目的父栏目Id为categoryCategoryId子栏目
