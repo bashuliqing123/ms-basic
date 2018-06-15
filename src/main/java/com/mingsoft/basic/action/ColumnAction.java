@@ -96,7 +96,7 @@ public class ColumnAction extends BaseAction{
 	 * @param response
 	 * @return false:不合法 true:合法
 	 */
-	private boolean checkForm(ColumnEntity column, HttpServletResponse response){
+	protected boolean checkForm(ColumnEntity column, HttpServletResponse response){
 		//栏目标题空值验证
 		if(StringUtil.isBlank(column.getCategoryTitle())){
 			this.outJson( response, ModelCode.COLUMN, false, getResString("err.empty", this.getResString("categoryTitle")));

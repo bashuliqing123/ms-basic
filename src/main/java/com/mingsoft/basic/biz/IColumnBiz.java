@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.entity.BasicEntity;
+import com.mingsoft.basic.entity.CategoryEntity;
 import com.mingsoft.basic.entity.ColumnEntity;
 
 /**
@@ -147,5 +148,33 @@ public interface IColumnBiz extends ICategoryBiz {
 	 * @return 子栏目统计数目
 	 */
 	public int queryColumnChildListCountByWebsiteId(int categoryCategoryId,int columnWebsiteId);
-
+	
+	/**
+	 * @Title: save  
+	 * @Description: TODO(通用栏目保存)  
+	 * @param @param columnEntity
+	 * @param @param modelCode参数  
+	 * @return void返回类型  
+	 * @throws
+	 */
+	public void save(ColumnEntity column,int modelCode,int CategoryManagerId);
+	
+	/**
+	 * 
+	 * @Title: delete  
+	 * @Description: TODO(通用栏目删除)  
+	 * @param @param columns参数  
+	 * @return void返回类型  
+	 * @throws
+	 */
+	public void delete(List<ColumnEntity> columns);
+	/**
+	 * 
+	 * @Title: update  
+	 * @Description: TODO(通用栏目uapdate)  
+	 * @param @param column参数  
+	 * @return void返回类型  
+	 * @throws
+	 */
+	public void update(ColumnEntity column,int modelCode);
 }

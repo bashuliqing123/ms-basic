@@ -22,6 +22,7 @@ The MIT License (MIT) * Copyright (c) 2016 铭飞科技(mingsoft.net)
 package com.mingsoft.basic.biz.impl;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -307,6 +308,33 @@ public class ColumnBizImpl extends CategoryBizImpl implements IColumnBiz {
 		//生成文件夹
 		File fileName = new File(file);
         fileName.mkdir();
+	}
+
+	@Override
+	public void save(ColumnEntity column, int modelCode,int CategoryManagerId) {
+		column.setCategoryAppId(BasicUtil.getAppId());
+		column.setAppId(BasicUtil.getAppId());
+		column.setCategoryManagerId(CategoryManagerId);
+		column.setCategoryDateTime(new Timestamp(System.currentTimeMillis()));
+		column.setCategoryModelId(modelCode);
+		if(column.getColumnType()==ColumnEntity.ColumnTypeEnum.COLUMN_TYPE_COVER.toInt()){
+			column.setColumnListUrl(null);
+		}
+		super.saveCategory(column);
+		columnPath(column);
+		
+	}
+
+	@Override
+	public void delete(List<ColumnEntity> columns) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(ColumnEntity column, int modelCode) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
