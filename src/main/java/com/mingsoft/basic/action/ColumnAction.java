@@ -2,7 +2,6 @@ package com.mingsoft.basic.action;
 
 
 import java.io.File;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,14 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.biz.IColumnBiz;
-import com.mingsoft.basic.biz.IModelBiz;
 import com.mingsoft.basic.constant.Const;
 import com.mingsoft.basic.constant.ModelCode;
-import com.mingsoft.basic.constant.e.SessionConstEnum;
 import com.mingsoft.basic.entity.ColumnEntity;
-import com.mingsoft.basic.entity.ManagerEntity;
 import com.mingsoft.parser.IParserRegexConstant;
 import com.mingsoft.util.StringUtil;
 
@@ -52,14 +48,12 @@ public class ColumnAction extends BaseAction{
 	 */
 	@Autowired
 	private IColumnBiz columnBiz;
-	@Autowired
-	private ICategoryBiz categoryBiz;
 	
 	/**
-	 * 模块业务层注入
+	 * 通用获取路径
 	 */
-	@Autowired
-	private IModelBiz modelBiz;
+	@Value("${managerPath}")
+	protected String managerPath;
 	/**
 	 * 返回主界面index
 	 */
@@ -74,10 +68,9 @@ public class ColumnAction extends BaseAction{
 	 */
 	@RequestMapping("/add")
 	public String add(HttpServletRequest request,ModelMap model) {
-		ManagerEntity managerSession = (ManagerEntity) getSession(request, SessionConstEnum.MANAGER_SESSION);
 		// 站点ID
-		int appId =this.getAppId(request);
-		List<ColumnEntity> list = columnBiz.queryAll(appId, this.getModelCodeId(request));
+		int appId = BasicUtil.getAppId();
+		List<ColumnEntity> list = columnBiz.queryAll(appId, BasicUtil.getModelCodeId(ModelCode.COLUMN));
 		ColumnEntity columnSuper = new ColumnEntity();
 		model.addAttribute("appId",appId);
 		model.addAttribute("columnSuper", columnSuper);
@@ -154,12 +147,11 @@ public class ColumnAction extends BaseAction{
 	@RequestMapping("/{columnId}/edit")
 	public String edit(@PathVariable int columnId, HttpServletRequest request,ModelMap model) {
 		// 获取管理实体
-		ManagerEntity managerSession = (ManagerEntity) getSession(request, SessionConstEnum.MANAGER_SESSION);
 		// 站点ID
-		int appId = this.getAppId(request);
+		int appId = BasicUtil.getAppId();
 		List<ColumnEntity> list = new ArrayList<ColumnEntity>();
 		// 判断管理员权限,查询其管理的栏目集合
-		list = columnBiz.queryAll(appId, this.getModelCodeId(request));
+		list = columnBiz.queryAll(appId, BasicUtil.getModelCodeId(ModelCode.COLUMN));
 		//查询当前栏目实体
 		ColumnEntity column = (ColumnEntity) columnBiz.getEntity(columnId);
 		model.addAttribute("appId",appId);
@@ -183,9 +175,9 @@ public class ColumnAction extends BaseAction{
 	public void list(@ModelAttribute ColumnEntity column,HttpServletResponse response, HttpServletRequest request,ModelMap model) {
 
 		// 站点ID有session获取
-		int websiteId = this.getAppId(request);
+		int websiteId = BasicUtil.getAppId();
 		// 需要打开的栏目节点树的栏目ID
-		List list = columnBiz.queryAll(websiteId, this.getModelCodeId(request));
+		List list = columnBiz.queryAll(websiteId, BasicUtil.getModelCodeId(ModelCode.COLUMN));
 		EUListBean _list = new EUListBean(list, list.size());
 		this.outJson(response, net.mingsoft.base.util.JSONArray.toJSONString(_list));
 	}
