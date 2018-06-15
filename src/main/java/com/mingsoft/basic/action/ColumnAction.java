@@ -23,6 +23,7 @@ import com.mingsoft.base.entity.BaseEntity;
 import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.biz.IColumnBiz;
 import com.mingsoft.basic.biz.IModelBiz;
+import com.mingsoft.basic.biz.impl.ColumnBizImpl;
 import com.mingsoft.basic.constant.Const;
 import com.mingsoft.basic.constant.ModelCode;
 import com.mingsoft.basic.constant.e.SessionConstEnum;
@@ -122,44 +123,7 @@ public class ColumnAction extends BaseAction{
 		return true;
 	}
 
-	/**
-	 * 组织栏目链接地址
-	 * @param request
-	 * @param column 栏目实体
-	 */
-	private void columnPath(HttpServletRequest request,ColumnEntity column){
-		String columnPath = "";
-		String file = this.getRealPath(request,null)+IParserRegexConstant.HTML_SAVE_PATH+File.separator+ column.getAppId();
-		String delFile = "";
-		//修改栏目路径时，删除已存在的文件夹
-		column = (ColumnEntity) columnBiz.getEntity(column.getCategoryId());
-		delFile = file + column.getColumnPath();
-		if(!StringUtil.isBlank(delFile)){
-			File delFileName = new File(delFile);
-			delFileName.delete();
-		}
-		//若为顶级栏目，则路径为：/+栏目ID
-		if(column.getCategoryCategoryId() == 0){
-			column.setColumnPath(File.separator+column.getCategoryId());
-			file = file + File.separator + column.getCategoryId();
-		} else {
-			List<ColumnEntity> list = columnBiz.queryParentColumnByColumnId(column.getCategoryId());
-			if(!StringUtil.isBlank(list)){
-				String temp = "";
-				for(int i = list.size()-1; i>=0; i--){
-					ColumnEntity entity = list.get(i);
-					columnPath = columnPath + File.separator + entity.getCategoryId();
-					temp = temp + File.separator + entity.getCategoryId();
-				}
-				column.setColumnPath(columnPath + File.separator + column.getCategoryId());
-				file = file + temp + File.separator + column.getCategoryId();
-			}
-		}
-		columnBiz.updateEntity(column);
-		//生成文件夹
-		File fileName = new File(file);
-        fileName.mkdir();
-	}
+	
 	
 	/**
 	 * @param column 栏目表实体
@@ -251,7 +215,7 @@ public class ColumnAction extends BaseAction{
 			column.setColumnListUrl(null);
 		}
 		columnBiz.saveCategory(column);
-		this.columnPath(request,column);
+		ColumnBizImpl.columnPath(column);
 		this.outJson(response, ModelCode.COLUMN, true,null,JSONArray.toJSONString(column.getCategoryId()));
 	}
 	
@@ -277,7 +241,7 @@ public class ColumnAction extends BaseAction{
 		column.setCategoryManagerId(getManagerBySession(request).getManagerId());
 		column.setAppId(websiteId);
 		columnBiz.updateCategory(column);
-		this.columnPath(request,column);
+		ColumnBizImpl.columnPath(column);
 		//查询当前栏目是否有子栏目，
 		List<ColumnEntity> childList = columnBiz.queryChild(column.getCategoryId(), websiteId,this.getModelCodeId(request),null);
 		if(childList != null && childList.size()>0){
@@ -288,7 +252,7 @@ public class ColumnAction extends BaseAction{
 				childList.get(i).setAppId(websiteId);
 				columnBiz.updateCategory(childList.get(i));
 				//组织子栏目链接地址
-				this.columnPath(request, childList.get(i));
+				ColumnBizImpl.columnPath(childList.get(i));
 			}
 		}
 		this.outJson(response, ModelCode.COLUMN, true,null,JSONArray.toJSONString(column.getCategoryId()));
