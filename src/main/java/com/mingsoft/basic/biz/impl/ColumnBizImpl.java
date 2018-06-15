@@ -21,21 +21,22 @@ The MIT License (MIT) * Copyright (c) 2016 铭飞科技(mingsoft.net)
 
 package com.mingsoft.basic.biz.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mchange.v1.util.ArrayUtils;
 import com.mingsoft.base.dao.IBaseDao;
-import com.mingsoft.basic.biz.impl.CategoryBizImpl;
-import com.mingsoft.basic.entity.BasicEntity;
 import com.mingsoft.basic.biz.IColumnBiz;
 import com.mingsoft.basic.dao.IColumnDao;
 import com.mingsoft.basic.entity.ColumnEntity;
+import com.mingsoft.parser.IParserRegexConstant;
+import com.mingsoft.util.StringUtil;
 
 import net.mingsoft.basic.util.BasicUtil;
+import net.mingsoft.basic.util.SpringUtil;
 
 /**
  * 
@@ -266,6 +267,46 @@ public class ColumnBizImpl extends CategoryBizImpl implements IColumnBiz {
 	 */
 	public int queryColumnChildListCountByWebsiteId(int categoryCategoryId, int columnWebsiteId) {
 		return columnDao.queryColumnChildListCountByWebsiteId(categoryCategoryId, columnWebsiteId);
+	}
+	
+	/**
+	 * 组织栏目链接地址
+	 * @param request
+	 * @param column 栏目实体
+	 */
+	public static void columnPath(ColumnEntity column) {
+		IColumnBiz columnBiz=  SpringUtil.getBean(IColumnBiz.class);
+		String columnPath = "";
+		String file = BasicUtil.getRealPath("")+IParserRegexConstant.HTML_SAVE_PATH+File.separator+ column.getAppId();
+		String delFile = "";
+		//修改栏目路径时，删除已存在的文件夹
+		column = (ColumnEntity) columnBiz.getEntity(column.getCategoryId());
+		delFile = file + column.getColumnPath();
+		if(!StringUtil.isBlank(delFile)){
+			File delFileName = new File(delFile);
+			delFileName.delete();
+		}
+		//若为顶级栏目，则路径为：/+栏目ID
+		if(column.getCategoryCategoryId() == 0){
+			column.setColumnPath(File.separator+column.getCategoryId());
+			file = file + File.separator + column.getCategoryId();
+		} else {
+			List<ColumnEntity> list = columnBiz.queryParentColumnByColumnId(column.getCategoryId());
+			if(!StringUtil.isBlank(list)){
+				String temp = "";
+				for(int i = list.size()-1; i>=0; i--){
+					ColumnEntity entity = list.get(i);
+					columnPath = columnPath + File.separator + entity.getCategoryId();
+					temp = temp + File.separator + entity.getCategoryId();
+				}
+				column.setColumnPath(columnPath + File.separator + column.getCategoryId());
+				file = file + temp + File.separator + column.getCategoryId();
+			}
+		}
+		columnBiz.updateEntity(column);
+		//生成文件夹
+		File fileName = new File(file);
+        fileName.mkdir();
 	}
 
 }
