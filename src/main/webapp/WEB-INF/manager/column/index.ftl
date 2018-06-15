@@ -9,7 +9,7 @@
 		<div id="toolbar">
 			<@ms.panelNav>
 				<@ms.buttonGroup>
-					<#include "${managerViewPath}/column/shiro-button.ftl"/>
+					<#include "${managerPathModel}/column/shiro-button.ftl"/>
 				</@ms.buttonGroup>
 			</@ms.panelNav>
 		</div>
