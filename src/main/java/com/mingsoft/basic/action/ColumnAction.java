@@ -14,20 +14,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mingsoft.base.entity.BaseEntity;
 import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.biz.IColumnBiz;
 import com.mingsoft.basic.biz.IModelBiz;
-import com.mingsoft.basic.biz.impl.ColumnBizImpl;
 import com.mingsoft.basic.constant.Const;
 import com.mingsoft.basic.constant.ModelCode;
 import com.mingsoft.basic.constant.e.SessionConstEnum;
-import com.mingsoft.basic.entity.CategoryEntity;
 import com.mingsoft.basic.entity.ColumnEntity;
 import com.mingsoft.basic.entity.ManagerEntity;
 import com.mingsoft.parser.IParserRegexConstant;
@@ -68,7 +64,7 @@ public class ColumnAction extends BaseAction{
 	 * 返回主界面index
 	 */
 	@RequestMapping("/index")
-	public String index(HttpServletResponse response,HttpServletRequest request){
+	public String index(HttpServletResponse response,HttpServletRequest request,ModelMap model){
 		return view ("/column/index");
 	}
 	/**
@@ -206,16 +202,9 @@ public class ColumnAction extends BaseAction{
 		if(!checkForm(column,response)){
 			return;
 		}
-		column.setCategoryAppId( this.getAppId(request));
-		column.setAppId(BasicUtil.getAppId());
-		column.setCategoryManagerId(getManagerBySession(request).getManagerId());
-		column.setCategoryDateTime(new Timestamp(System.currentTimeMillis()));
-		column.setCategoryModelId(this.getModelCodeId(request));
-		if(column.getColumnType()==ColumnEntity.ColumnTypeEnum.COLUMN_TYPE_COVER.toInt()){
-			column.setColumnListUrl(null);
-		}
-		columnBiz.saveCategory(column);
-		ColumnBizImpl.columnPath(column);
+		
+		String file = this.getRealPath(request,"")+IParserRegexConstant.HTML_SAVE_PATH+File.separator+ column.getAppId();
+		columnBiz.save(column, BasicUtil.getModelCodeId(ModelCode.COLUMN), this.getManagerId(request), file);
 		this.outJson(response, ModelCode.COLUMN, true,null,JSONArray.toJSONString(column.getCategoryId()));
 	}
 	
@@ -228,33 +217,8 @@ public class ColumnAction extends BaseAction{
 	@RequestMapping("/update")
 	@ResponseBody
 	public void update(@ModelAttribute ColumnEntity column,HttpServletRequest request,HttpServletResponse response) {
-		//获取站点ID
-		int websiteId = this.getAppId(request);
-		//检测栏目信息是否合法
-		if(!checkForm(column,response)){
-			return;
-		}
-		//若栏目管理属性为单页，则栏目的列表模板地址设为Null
-		if(column.getColumnType()==ColumnEntity.ColumnTypeEnum.COLUMN_TYPE_COVER.toInt()){
-			column.setColumnListUrl(null);
-		}
-		column.setCategoryManagerId(getManagerBySession(request).getManagerId());
-		column.setAppId(websiteId);
-		columnBiz.updateCategory(column);
-		ColumnBizImpl.columnPath(column);
-		//查询当前栏目是否有子栏目，
-		List<ColumnEntity> childList = columnBiz.queryChild(column.getCategoryId(), websiteId,this.getModelCodeId(request),null);
-		if(childList != null && childList.size()>0){
-			//改变子栏目的顶级栏目ID为当前栏目的父级栏目ID
-			for(int i=0;i<childList.size();i++){
-				childList.get(i).setCategoryCategoryId(column.getCategoryId());
-				childList.get(i).setCategoryManagerId(getManagerBySession(request).getManagerId());
-				childList.get(i).setAppId(websiteId);
-				columnBiz.updateCategory(childList.get(i));
-				//组织子栏目链接地址
-				ColumnBizImpl.columnPath(childList.get(i));
-			}
-		}
+		String file = this.getRealPath(request,null)+IParserRegexConstant.HTML_SAVE_PATH+File.separator+ column.getAppId();
+		columnBiz.update(column, BasicUtil.getModelCodeId(ModelCode.COLUMN), this.getManagerId(request), file);
 		this.outJson(response, ModelCode.COLUMN, true,null,JSONArray.toJSONString(column.getCategoryId()));
 	}
 }

@@ -33,8 +33,10 @@ import com.mingsoft.base.dao.IBaseDao;
 import com.mingsoft.basic.biz.IColumnBiz;
 import com.mingsoft.basic.dao.IColumnDao;
 import com.mingsoft.basic.entity.ColumnEntity;
+import com.mingsoft.basic.entity.ManagerSessionEntity;
 import com.mingsoft.parser.IParserRegexConstant;
 import com.mingsoft.util.StringUtil;
+import com.sun.swing.internal.plaf.basic.resources.basic;
 
 import net.mingsoft.basic.util.BasicUtil;
 import net.mingsoft.basic.util.SpringUtil;
@@ -275,10 +277,9 @@ public class ColumnBizImpl extends CategoryBizImpl implements IColumnBiz {
 	 * @param request
 	 * @param column 栏目实体
 	 */
-	public static void columnPath(ColumnEntity column) {
+	public static void columnPath(ColumnEntity column,String file) {
 		IColumnBiz columnBiz=  SpringUtil.getBean(IColumnBiz.class);
 		String columnPath = "";
-		String file = BasicUtil.getRealPath("")+IParserRegexConstant.HTML_SAVE_PATH+File.separator+ column.getAppId();
 		String delFile = "";
 		//修改栏目路径时，删除已存在的文件夹
 		column = (ColumnEntity) columnBiz.getEntity(column.getCategoryId());
@@ -311,7 +312,7 @@ public class ColumnBizImpl extends CategoryBizImpl implements IColumnBiz {
 	}
 
 	@Override
-	public void save(ColumnEntity column, int modelCode,int CategoryManagerId) {
+	public void save(ColumnEntity column, int modelCode,int CategoryManagerId,String file) {
 		column.setCategoryAppId(BasicUtil.getAppId());
 		column.setAppId(BasicUtil.getAppId());
 		column.setCategoryManagerId(CategoryManagerId);
@@ -321,20 +322,46 @@ public class ColumnBizImpl extends CategoryBizImpl implements IColumnBiz {
 			column.setColumnListUrl(null);
 		}
 		super.saveCategory(column);
-		columnPath(column);
-		
+		ColumnBizImpl.columnPath(column,file);
 	}
 
 	@Override
 	public void delete(List<ColumnEntity> columns) {
-		// TODO Auto-generated method stub
+		int[] ids = new int[columns.size()];
+		for(int i = 0;i<columns.size();i++){
+			ids[i] = columns.get(i).getCategoryId();
+		}
 		
 	}
 
 	@Override
-	public void update(ColumnEntity column, int modelCode) {
-		// TODO Auto-generated method stub
-		
+	public void update(ColumnEntity column, int modelCode, int managerId, String file) {
+		// 获取站点ID
+		int websiteId = BasicUtil.getAppId();
+		// 检测栏目信息是否合法
+
+		// 若栏目管理属性为单页，则栏目的列表模板地址设为Null
+		if (column.getColumnType() == ColumnEntity.ColumnTypeEnum.COLUMN_TYPE_COVER.toInt()) {
+			column.setColumnListUrl(null);
+		}
+		column.setCategoryManagerId(managerId);
+		column.setAppId(websiteId);
+		super.updateCategory(column);
+		ColumnBizImpl.columnPath(column, file);
+		// 查询当前栏目是否有子栏目，
+		List<ColumnEntity> childList = this.queryChild(column.getCategoryId(), websiteId, modelCode, null);
+		if (childList != null && childList.size() > 0) {
+			// 改变子栏目的顶级栏目ID为当前栏目的父级栏目ID
+			for (int i = 0; i < childList.size(); i++) {
+				childList.get(i).setCategoryCategoryId(column.getCategoryId());
+				childList.get(i).setCategoryManagerId(managerId);
+				childList.get(i).setAppId(websiteId);
+				super.updateCategory(childList.get(i));
+				// 组织子栏目链接地址
+				ColumnBizImpl.columnPath(childList.get(i), file);
+			}
+		}
+
 	}
 
 }

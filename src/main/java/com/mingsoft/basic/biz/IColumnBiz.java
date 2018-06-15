@@ -157,7 +157,7 @@ public interface IColumnBiz extends ICategoryBiz {
 	 * @return void返回类型  
 	 * @throws
 	 */
-	public void save(ColumnEntity column,int modelCode,int CategoryManagerId);
+	public void save(ColumnEntity column,int modelCode,int CategoryManagerId,String file);
 	
 	/**
 	 * 
@@ -176,5 +176,5 @@ public interface IColumnBiz extends ICategoryBiz {
 	 * @return void返回类型  
 	 * @throws
 	 */
-	public void update(ColumnEntity column,int modelCode);
+	public void update(ColumnEntity column,int modelCode,int managerId,String file);
 }

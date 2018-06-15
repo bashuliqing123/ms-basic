@@ -89,7 +89,7 @@
 	
 	//增加按钮
 	$("#addColumnBtn").click(function(){
-		location.href ="${managerPath}/column/add.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}"; 
+		location.href ="${managerPath}/${model?default("")}/column/add.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}"; 
 	})
 	//删除按钮
 	$("#delColumnBtn").click(function(){
