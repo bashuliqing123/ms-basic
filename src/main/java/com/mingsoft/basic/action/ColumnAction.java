@@ -50,10 +50,16 @@ public class ColumnAction extends BaseAction{
 	private IColumnBiz columnBiz;
 	
 	/**
-	 * 通用获取路径
+	 * 通用后台获取路径
 	 */
 	@Value("${managerPath}")
 	protected String managerPath;
+	
+	/**
+	 * 通用视图获取路径
+	 */
+	@Value("${managerViewPath}")
+	protected String managerViewPath;
 	/**
 	 * 返回主界面index
 	 */
@@ -70,7 +76,7 @@ public class ColumnAction extends BaseAction{
 	public String add(HttpServletRequest request,ModelMap model) {
 		// 站点ID
 		int appId = BasicUtil.getAppId();
-		List<ColumnEntity> list = columnBiz.queryAll(appId, BasicUtil.getModelCodeId(ModelCode.COLUMN));
+		List<ColumnEntity> list = columnBiz.queryAll(appId, this.getModelCodeId(request));
 		ColumnEntity columnSuper = new ColumnEntity();
 		model.addAttribute("appId",appId);
 		model.addAttribute("columnSuper", columnSuper);
@@ -177,7 +183,7 @@ public class ColumnAction extends BaseAction{
 		// 站点ID有session获取
 		int websiteId = BasicUtil.getAppId();
 		// 需要打开的栏目节点树的栏目ID
-		List list = columnBiz.queryAll(websiteId, BasicUtil.getModelCodeId(ModelCode.COLUMN));
+		List list = columnBiz.queryAll(websiteId, this.getModelCodeId(request));
 		EUListBean _list = new EUListBean(list, list.size());
 		this.outJson(response, net.mingsoft.base.util.JSONArray.toJSONString(_list));
 	}
@@ -196,7 +202,7 @@ public class ColumnAction extends BaseAction{
 		}
 		
 		String file = this.getRealPath(request,"")+IParserRegexConstant.HTML_SAVE_PATH+File.separator+ column.getAppId();
-		columnBiz.save(column, BasicUtil.getModelCodeId(ModelCode.COLUMN), this.getManagerId(request), file);
+		columnBiz.save(column, this.getModelCodeId(request), this.getManagerId(request), file);
 		this.outJson(response, ModelCode.COLUMN, true,null,JSONArray.toJSONString(column.getCategoryId()));
 	}
 	
@@ -210,7 +216,7 @@ public class ColumnAction extends BaseAction{
 	@ResponseBody
 	public void update(@ModelAttribute ColumnEntity column,HttpServletRequest request,HttpServletResponse response) {
 		String file = this.getRealPath(request,null)+IParserRegexConstant.HTML_SAVE_PATH+File.separator+ column.getAppId();
-		columnBiz.update(column, BasicUtil.getModelCodeId(ModelCode.COLUMN), this.getManagerId(request), file);
+		columnBiz.update(column, this.getModelCodeId(request), this.getManagerId(request), file);
 		this.outJson(response, ModelCode.COLUMN, true,null,JSONArray.toJSONString(column.getCategoryId()));
 	}
 }

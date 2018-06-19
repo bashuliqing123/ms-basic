@@ -326,10 +326,11 @@ public class ColumnBizImpl extends CategoryBizImpl implements IColumnBiz {
 	}
 
 	@Override
-	public void delete(List<ColumnEntity> columns) {
-		int[] ids = new int[columns.size()];
-		for(int i = 0;i<columns.size();i++){
-			ids[i] = columns.get(i).getCategoryId();
+	public void delete(int[] columns) {
+		for(int i=0;i<columns.length;i++){
+			if(this.getEntity(columns[i]) != null){
+				super.deleteCategory(columns[i]);
+			}
 		}
 		
 	}

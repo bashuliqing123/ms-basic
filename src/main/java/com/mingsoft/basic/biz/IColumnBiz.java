@@ -167,7 +167,7 @@ public interface IColumnBiz extends ICategoryBiz {
 	 * @return void返回类型  
 	 * @throws
 	 */
-	public void delete(List<ColumnEntity> columns);
+	public void delete(int[] columns);
 	/**
 	 * 
 	 * @Title: update  

@@ -9,7 +9,7 @@
 		<div id="toolbar">
 			<@ms.panelNav>
 				<@ms.buttonGroup>
-					<#include "${managerPathModel}/column/shiro-button.ftl"/>
+					<#include "${managerViewPathModel}/column/shiro-button.ftl"/>
 				</@ms.buttonGroup>
 			</@ms.panelNav>
 		</div>
@@ -34,7 +34,7 @@
 <script>
 	$(function(){
 		$("#columnList").bootstrapTable({
-			url:"${managerPathModel}/column/list.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}",
+			url:"${projectName}${managerPathModel}/column/list.do",
 			contentType : "application/x-www-form-urlencoded",
 			queryParamsType : "undefined",
 			toolbar: "#toolbar",
@@ -53,7 +53,7 @@
 		        	title: '标题',
 		        	align: 'left',
 		        	formatter:function(value,row,index) {
-						<#include "${managerPathModel}/column/shiro-update.ftl"/>
+						<#include "${managerViewPathModel}/column/shiro-update.ftl"/>
 		        	}
 		        	
 		    	},{
