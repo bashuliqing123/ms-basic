@@ -34,7 +34,7 @@
 <script>
 	$(function(){
 		$("#columnList").bootstrapTable({
-			url:"${projectName}${managerPathModel}/column/list.do",
+			url:"${managerPathModel}/column/list.do",
 			contentType : "application/x-www-form-urlencoded",
 			queryParamsType : "undefined",
 			toolbar: "#toolbar",
