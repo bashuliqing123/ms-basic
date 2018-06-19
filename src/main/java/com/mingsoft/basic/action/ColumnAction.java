@@ -151,7 +151,7 @@ public class ColumnAction extends BaseAction{
 		int appId = BasicUtil.getAppId();
 		List<ColumnEntity> list = new ArrayList<ColumnEntity>();
 		// 判断管理员权限,查询其管理的栏目集合
-		list = columnBiz.queryAll(appId, BasicUtil.getModelCodeId(ModelCode.COLUMN));
+		list = columnBiz.queryAll(appId, this.getModelCodeId(request));
 		//查询当前栏目实体
 		ColumnEntity column = (ColumnEntity) columnBiz.getEntity(columnId);
 		model.addAttribute("appId",appId);
