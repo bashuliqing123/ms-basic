@@ -806,10 +806,4 @@ public class BasicUtil extends BaseUtil{
 
 	}
 	
-	public static String getManagerPath(HttpServletRequest request) {
-		String managerPath = (String) request.getAttribute(BaseInterceptor.MANAGER_PATH);
-		return "";
-		
-	}
-
 }
