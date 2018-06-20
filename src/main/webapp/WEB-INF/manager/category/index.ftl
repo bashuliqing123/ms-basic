@@ -10,8 +10,7 @@
 		<div id="toolbar">
 			<@ms.panelNav>
 				<@ms.buttonGroup>
-					<@ms.addButton id="addCategoryBtn"/>
-					<@ms.delButton id="delCategoryBtn"/>
+					<#include "${managerViewPath}/${model?default('')}/category/shiro-button.ftl"/>					
 				</@ms.buttonGroup>
 			</@ms.panelNav>
 		</div>
@@ -57,8 +56,7 @@
 				        	field: 'categoryTitle',
 				        	title: '${modelTitle}标题',
 				        	formatter:function(value,row,index) {
-				        		var url = "${managerPath}/category/form.do?categoryId="+row.categoryId+"&modelId=${modelId?default('0')}&modelTitle=${modelTitle?default('0')}" ;
-				        		return "<a href=" +url+ " target='_self'>" + value + "</a>";
+				        		<#include "${managerViewPath}/${model?default('')}/category/shiro-update.ftl"/>
 				        	}
 				    	},							    	{
 				        	field: 'categoryDescription',
