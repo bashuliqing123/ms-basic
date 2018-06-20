@@ -44,11 +44,11 @@ import com.mingsoft.util.StringUtil;
 
 /**
  * 基础拦截器
- * 
- * @author 王天培QQ:78750478
- * @version 版本号：100-000-000<br/>
- *          创建日期：2012-03-15<br/>
- *          历史修订：<br/>
+ * @author 铭飞开发团队
+ * @version 
+ * 版本号：100-000-000<br/>
+ * 创建日期：2012年6月20日<br/>
+ * 历史修订：<br/>
  */
 public abstract class BaseInterceptor extends HandlerInterceptorAdapter {
 	public final static String BASE = "base";
@@ -63,7 +63,7 @@ public abstract class BaseInterceptor extends HandlerInterceptorAdapter {
 	
 	public final static String MANAGER_PATH = "managerPath";
 	public final static String MANAGER_VIEW_PATH = "managerViewPath";
-	
+
 	public final static String PARAMS = "params";
 	
 	

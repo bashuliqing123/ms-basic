@@ -805,5 +805,11 @@ public class BasicUtil extends BaseUtil{
 		return b;// false pc true shouji
 
 	}
+	
+	public static String getManagerPath(HttpServletRequest request) {
+		String managerPath = (String) request.getAttribute(BaseInterceptor.MANAGER_PATH);
+		return "";
+		
+	}
 
 }

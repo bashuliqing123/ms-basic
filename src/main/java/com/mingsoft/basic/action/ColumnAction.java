@@ -49,11 +49,6 @@ public class ColumnAction extends BaseAction{
 	@Autowired
 	private IColumnBiz columnBiz;
 	
-	/**
-	 * 通用后台获取路径
-	 */
-	@Value("${managerPath}")
-	protected String managerPath;
 	
 	/**
 	 * 通用视图获取路径
