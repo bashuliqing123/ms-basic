@@ -34,7 +34,7 @@
 <script>
 	$(function(){
 		$("#columnList").bootstrapTable({
-			url:"${managerpath}/${model?default("")}/column/list.do",
+			url:"${managerpath}/${model?default('')}/column/list.do",
 			contentType : "application/x-www-form-urlencoded",
 			queryParamsType : "undefined",
 			toolbar: "#toolbar",
@@ -115,7 +115,7 @@
 	
 	//增加按钮
 	$("#addColumnBtn").click(function(){
-		location.href ="${managerpath}/${model?default("")}/column/add.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}"; 
+		location.href ="${managerpath}/${model?default('')}/column/add.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}"; 
 	})
 	//删除按钮
 	$("#delColumnBtn").click(function(){
@@ -139,7 +139,7 @@
 		}
 		$.ajax({
 			type: "post",
-			url: ""${managerpath}/${model?default("")}/column/delete.do?ids="+ids,
+			url: ""${managerpath}/${model?default('')}/column/delete.do?ids="+ids,
 			dataType: "json",
 			contentType: "application/json",
 			success:function(msg) {
