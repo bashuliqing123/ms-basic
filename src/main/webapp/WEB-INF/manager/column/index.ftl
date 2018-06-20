@@ -9,7 +9,7 @@
 		<div id="toolbar">
 			<@ms.panelNav>
 				<@ms.buttonGroup>
-					<#include "${model?default('')}/column/shiro-button.ftl"/>
+					<#include "${managerViewPath}/${model?default('')}/column/shiro-button.ftl"/>
 				</@ms.buttonGroup>
 			</@ms.panelNav>
 		</div>
@@ -53,9 +53,8 @@
 		        	title: '标题',
 		        	align: 'left',
 		        	formatter:function(value,row,index) {
-						<#include "${model}/column/shiro-update.ftl"/>
+						<#include "${managerViewPath}/${model?default('')}/column/shiro-update.ftl"/>
 		        	}
-		        	
 		    	},{
 		        	field: 'columnType',
 		        	title: '属性',
