@@ -58,7 +58,6 @@ public class CategoryAction extends com.mingsoft.basic.action.BaseAction{
 	 * 返回主界面index
 	 */
 	@RequestMapping("/index")
-	@RequiresPermissions("category:view")
 	public String index(HttpServletResponse response,HttpServletRequest request,ModelMap model){
 		String modelTitle = BasicUtil.getString("modelTitle");
 		int modelId =BasicUtil.getInt("modelId");
@@ -230,7 +229,6 @@ public class CategoryAction extends com.mingsoft.basic.action.BaseAction{
 	 * }</dd><br/>
 	 */
 	@PostMapping("/save")
-	@RequiresPermissions("category:save")
 	@ResponseBody
 	public void save(@ModelAttribute CategoryEntity category, HttpServletResponse response, HttpServletRequest request) {
 		//验证类别标题的值是否合法			
@@ -266,7 +264,6 @@ public class CategoryAction extends com.mingsoft.basic.action.BaseAction{
 	 *            }</dd>
 	 */
 	@RequestMapping("/delete")
-	@RequiresPermissions("category:delete")
 	@ResponseBody
 	public void delete(@RequestBody List<CategoryEntity> categorys,HttpServletResponse response, HttpServletRequest request) {
 		int[] ids = new int[categorys.size()];
@@ -306,7 +303,6 @@ public class CategoryAction extends com.mingsoft.basic.action.BaseAction{
 	 * }</dd><br/>
 	 */
 	@PostMapping("/update")
-	@RequiresPermissions("category:update")
 	@ResponseBody	 
 	public void update(@ModelAttribute CategoryEntity category, HttpServletResponse response,
 			HttpServletRequest request) {
