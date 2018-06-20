@@ -1,2 +1,2 @@
-					<@ms.addButton id="addColumnBtn"/>
-					<@ms.delButton id="delColumnBtn"/>
+<@ms.addButton id="addColumnBtn"/>
+<@ms.delButton id="delColumnBtn"/>

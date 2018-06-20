@@ -9,7 +9,7 @@
 		<div id="toolbar">
 			<@ms.panelNav>
 				<@ms.buttonGroup>
-					<#include "${managerViewPathModel}/column/shiro-button.ftl"/>
+					<#include "${model?default('')}/column/shiro-button.ftl"/>
 				</@ms.buttonGroup>
 			</@ms.panelNav>
 		</div>
@@ -34,7 +34,7 @@
 <script>
 	$(function(){
 		$("#columnList").bootstrapTable({
-			url:"${managerPathModel}/column/list.do",
+			url:"${managerpath}/${model?default("")}/column/list.do",
 			contentType : "application/x-www-form-urlencoded",
 			queryParamsType : "undefined",
 			toolbar: "#toolbar",
@@ -53,7 +53,7 @@
 		        	title: '标题',
 		        	align: 'left',
 		        	formatter:function(value,row,index) {
-						<#include "${managerViewPathModel}/column/shiro-update.ftl"/>
+						<#include "${model}/column/shiro-update.ftl"/>
 		        	}
 		        	
 		    	},{
@@ -116,7 +116,7 @@
 	
 	//增加按钮
 	$("#addColumnBtn").click(function(){
-		location.href ="${managerPathModel}/column/add.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}"; 
+		location.href ="${managerpath}/${model?default("")}/column/add.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}"; 
 	})
 	//删除按钮
 	$("#delColumnBtn").click(function(){
@@ -140,7 +140,7 @@
 		}
 		$.ajax({
 			type: "post",
-			url: "${managerPathModel}/column/delete.do?ids="+ids,
+			url: ""${managerpath}/${model?default("")}/column/delete.do?ids="+ids,
 			dataType: "json",
 			contentType: "application/json",
 			success:function(msg) {

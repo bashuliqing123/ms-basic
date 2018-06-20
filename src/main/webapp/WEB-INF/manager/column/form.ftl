@@ -108,9 +108,9 @@ $(function(){
 		var formdata = $("#columnForm").serialize();
 		var URL = "";
 		<#if column.categoryId==0>
-		URL ="${managerPathModel}/column/save.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}";
+		URL ="${managerpath}/${model?default("")}/column/save.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}";
 		<#else>
-		URL = "${managerPathModel}/column/update.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}";
+		URL = "${managerpath}/${model?default("")}/column/update.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}";
 		</#if>
 		if(isNaN($("input[name=categorySort]").val())){
 			<@ms.notify msg= "自定义排序必须是数字" type= "warning" />
@@ -138,7 +138,7 @@ $(function(){
 	     				<@ms.notify msg= "更新成功" type= "success" />	
 	     			</#if>
 	     			var modelId = ${Session.model_id_session?default(0)};
-	     			location.href="${managerPathModel}/column/index.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}";
+	     			location.href="${managerpath}/${model?default("")}/column/index.do?modelId=${Session.model_id_session?default(0)}&modelTitle=${Session.model_title_session?default('')}";
 	    		}else{
 	    			<#if column.categoryId==0>
 	     				<@ms.notify msg= "保存失败" type= "warning" />
