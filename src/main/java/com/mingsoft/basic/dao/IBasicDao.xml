@@ -31,6 +31,7 @@
 		<if test="basicSort != null">BASIC_SORT,</if>
 		<if test="basicType != null">BASIC_TYPE,</if>
 		<if test="basicModelId != null">BASIC_MODELID,</if>
+		<if test="basicDisplay != null">basic_display,</if>
 	</sql>
 	<sql id="insertValues">
 	    <if test="basicTitle != null">#{basicTitle},</if>
@@ -45,6 +46,7 @@
 		<if test="basicSort != null">#{basicSort},</if>
 		<if test="basicType != null">#{basicType},</if>
 		<if test="basicModelId != null">#{basicModelId},</if>
+		<if test="basicDisplay != null">#{basicDisplay},</if>
 	</sql>
 	<!-- mysql或SqlServer添加开始 -->
 	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="basicId" parameterType="com.mingsoft.base.entity.BaseEntity">
@@ -94,7 +96,7 @@
 			<if test="basicCollect != null and basicCollect &gt; 0">BASIC_SORT=#{basicCollect},</if>
 			<if test="basicShare != null and basicShare &gt; 0">BASIC_SHARE=#{basicShare},</if>
 			<if test="basicType != null ">basic_type=#{basicType},</if>
-			<if test="basicAppId != null ">BASIC_APPID=#{basicAppId},</if>
+			<if test="basicDisplay != null ">basic_display=#{basicDisplay},</if>
 		</set>
 		where basic_id = #{basicId}
 	</update>

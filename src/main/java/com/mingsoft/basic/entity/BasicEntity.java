@@ -134,6 +134,11 @@ public class BasicEntity extends BaseEntity {
 	 */
 	private int basicShare;
 	
+	/**
+	 * 显示属性
+	 */
+	private int basicDisplay;
+	
 
 	/**
 	 * 扩展字段信息,不参加表结构
@@ -387,6 +392,14 @@ public class BasicEntity extends BaseEntity {
 
 	public void setBasicTypeIds(int[] basicTypeIds) {
 		this.basicTypeIds = basicTypeIds;
+	}
+
+	public int getBasicDisplay() {
+		return basicDisplay;
+	}
+
+	public void setBasicDisplay(int basicDisplay) {
+		this.basicDisplay = basicDisplay;
 	}
 	
 	
