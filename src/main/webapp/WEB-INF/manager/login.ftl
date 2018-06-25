@@ -47,8 +47,7 @@
                         <input id="remember" type="checkbox" name="" />
                         <label class="login-remember" for="remember">记住密码</label>
                     </p>
-                    <div  id="login-button" class="login-button"  v-if="!unbind" v-on:click="toLogin">登录</div>
-                    <div  id="login-button" class="login-button"  v-else>登录</div>
+                    <div  id="login-button" class="login-button"  v-on:click="toLogin">登录</div>
                 </form>
             </div>
         </div>
@@ -74,7 +73,6 @@
                 peopleName:$.cookie('managerName'),//用户名输入框
                 peoplePassword:$.cookie('managerPassword'),//密码输入框
 				code:"",//验证码
-				unbind:false
             },
             watch: {
 				peopleName: function() {
@@ -186,14 +184,14 @@
                     loginForm.checkLogin();
 		            if(this.isRight){
 		                $("#login-button").html("正在登录");
-                        this.unbind = true;
+		                $("#login-button").removeAttr("onclick");
 				        $(this).postForm("#loginForm",{loadingText:"正在登录中..",func:function(data) {
     				        if(data.result){
-    					    location.href = base + "${baseManager}/index.do";
+    					    location.href=base+"${baseManager}/index.do";
     				            }else{
     				        alert(data.resultMsg); 
     				        $("#login-button").html("登录");
-    				        this.unbind = false;
+    				        $("#login-button").attr("onclick","toLogin();");
     				        
 				        };
 				        
