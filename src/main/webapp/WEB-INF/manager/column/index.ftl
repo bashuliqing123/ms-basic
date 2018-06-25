@@ -46,7 +46,7 @@
 	    			checkbox: true
 	    		},{
 		        	field: 'categoryId',
-		        	title: '编号1',
+		        	title: '编号',
 		        	align: 'center'
 		    	},{
 		        	field: 'categoryTitle',
