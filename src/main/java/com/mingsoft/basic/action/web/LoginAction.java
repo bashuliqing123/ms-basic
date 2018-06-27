@@ -42,7 +42,6 @@ import com.mingsoft.basic.action.BaseAction;
 import com.mingsoft.basic.biz.IAppBiz;
 import com.mingsoft.basic.biz.IManagerBiz;
 import com.mingsoft.basic.biz.IRoleBiz;
-import com.mingsoft.basic.biz.ISystemSkinBiz;
 import com.mingsoft.basic.constant.Const;
 import com.mingsoft.basic.constant.ModelCode;
 import com.mingsoft.basic.constant.e.SessionConstEnum;
@@ -50,7 +49,6 @@ import com.mingsoft.basic.entity.AppEntity;
 import com.mingsoft.basic.entity.ManagerEntity;
 import com.mingsoft.basic.entity.ManagerSessionEntity;
 import com.mingsoft.basic.entity.RoleEntity;
-import com.mingsoft.basic.entity.SystemSkinEntity;
 import com.mingsoft.util.FileUtil;
 import com.mingsoft.util.StringUtil;
 
@@ -59,12 +57,13 @@ import net.mingsoft.basic.util.BasicUtil;
 import net.mingsoft.basic.util.SpringUtil;
 
 /**
- * 登录的基础应用层
  * 
- * @author 王天培
- * @version 版本号：100-000-000<br/>
- *          创建日期：2015-1-10<br/>
- *          历史修订：<br/>
+ * @ClassName:  LoginAction   
+ * @Description:TODO(登录的基础应用层)   
+ * @author: 铭飞开发团队
+ * @date:   2015年1月27日 下午3:21:47   
+ *     
+ * @Copyright: 2018 www.mingsoft.net Inc. All rights reserved.
  */
 @Controller
 @RequestMapping("/${managerPath}")
@@ -90,11 +89,6 @@ public class LoginAction extends BaseAction {
 	@Autowired
 	private IAppBiz appBiz;
 
-	/**
-	 * 系统皮肤业务处理层
-	 */
-	@Autowired
-	private ISystemSkinBiz systemSkinBiz;
 
 	/**
 	 * 加载管理员登录界面
@@ -172,7 +166,6 @@ public class LoginAction extends BaseAction {
 		} else {
 			// 判断当前用户输入的密码是否正确
 			if (StringUtil.Md5(manager.getManagerPassword()).equals(_manager.getManagerPassword())) {
-				SystemSkinEntity systemSkin = (SystemSkinEntity)systemSkinBiz.getEntity(_manager.getManagerSystemSkinId());
 				// 创建管理员session对象
 				ManagerSessionEntity managerSession = new ManagerSessionEntity();
 				AppEntity website = new AppEntity();
@@ -202,9 +195,6 @@ public class LoginAction extends BaseAction {
 					}
 				} 
 				BeanUtils.copyProperties(_manager, managerSession);
-				if (systemSkin != null) {
-					managerSession.setSystemSkin(systemSkin);
-				}
 
 				Subject subject = SecurityUtils.getSubject();
 				UsernamePasswordToken upt = new UsernamePasswordToken(managerSession.getManagerName(),

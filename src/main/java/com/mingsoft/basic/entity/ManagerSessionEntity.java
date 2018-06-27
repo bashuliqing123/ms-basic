@@ -63,10 +63,6 @@ public class ManagerSessionEntity extends ManagerEntity {
 		this.style = style;
 	}
 
-	/**
-     * 管理员的后台皮肤
-     */
-    private SystemSkinEntity systemSkin;
 
 	/**
      * 获取managerParentID
@@ -115,14 +111,5 @@ public class ManagerSessionEntity extends ManagerEntity {
 	public void setBasicId(int basicId) {
 		this.basicId = basicId;
 	}
-	
-    public SystemSkinEntity getSystemSkin() {
-		return systemSkin;
-	}
-
-	public void setSystemSkin(SystemSkinEntity systemSkin) {
-		this.systemSkin = systemSkin;
-	}
-    
     
 }
