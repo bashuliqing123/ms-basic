@@ -17,6 +17,7 @@
 		<result column="APP_LOGO" property="appLogo" />
 		<result column="APP_DATETIME" property="appDatetime" />
 		<result column="APP_MOBILE_STYLE" property="appMobileStyle" />
+		<result column="APP_LOGIN_PAGE" property="appLoginPage" /><!-- 应用自定义登录界面 -->
 	</resultMap>
 	<!-- 字段绑定结束 -->
 
@@ -37,6 +38,7 @@
 		<if test="appMobileStyle != null">APP_MOBILE_STYLE=#{appMobileStyle},</if>
 		<if test="appPayDate != null">APP_PAY_DATE=#{appPayDate},</if>
 		<if test="appPay != null">APP_PAY=#{appPay},</if>
+		<if test="appLoginPage != null">APP_LOGIN_PAGE=#{appLoginPage},</if>
 		</set>
 		where APP_Id = #{appId}
 	</update>

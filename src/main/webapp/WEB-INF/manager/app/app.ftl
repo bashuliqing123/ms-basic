@@ -20,6 +20,7 @@
 			<@ms.textarea name="appKeyword"  label="关键字" value="${app.appKeyword?default('')}" rows="4"  placeholder="请输入关键字"/>
 			<@ms.textarea name="appDescription"  label="描述"  value="${app.appDescription?default('')}" rows="4"  placeholder="请输入站点描述"/>
 			<@ms.textarea name="appCopyright"  label="版权信息" value="${app.appCopyright?default('')}" rows="4"  placeholder="请输入版权信息"/>
+			<@ms.textarea name="appLoginPage"  label="应用自定义登录界面" value="${app.appLoginPage?default('')}" rows="4"  placeholder="应用自定义登录界面"/>
 		</@ms.form>	
 	</@ms.panel>
 </@ms.html5>	  
