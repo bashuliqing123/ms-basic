@@ -17,6 +17,7 @@
 		</@ms.form>
 	</@ms.panel>
 </@ms.html5>
+
 <script>
 	$(function(){
 		//数据初始化
@@ -56,6 +57,7 @@
 	})
 	//保存操作
 	$("#save").click(function(){
+		$("#columnForm").data("bootstrapValidator").validate();
 		var isValid = $("#columnForm").data("bootstrapValidator").isValid();
 		if(!isValid) {
 			<@ms.notify msg= "数据提交失败，请检查数据格式！" type= "warning" />
