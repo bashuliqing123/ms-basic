@@ -189,7 +189,8 @@
     				        if(data.result){
     					    location.href=base+"${baseManager}/index.do";
     				            }else{
-    				        alert(data.resultMsg); 
+    				        alert(data.resultMsg);
+    				        $("#ms-login-code").attr("src","${basePath}/code?t="+new Date().getTime())
     				        $("#login-button").html("登录");
     				        $("#login-button").attr("onclick","toLogin();");
     				        
