@@ -292,10 +292,10 @@ public class ManagerAction extends com.mingsoft.basic.action.BaseAction{
 		ManagerEntity newManager = new ManagerEntity();
 		newManager.setManagerName(manager.getManagerName());
 		
-		ManagerEntity _manager = (ManagerEntity) managerBiz.getEntity(manager.getManagerId());
+		ManagerEntity _manager = (ManagerEntity) managerBiz.getEntity(newManager);
 		//用户名是否存在
-		if(!manager.getManagerName() .equals( _manager.getManagerName())){
-		    if(managerBiz.getEntity(newManager) != null ){
+		if(_manager != null){
+		    if(manager.getManagerId() != _manager.getManagerId()){
 			    this.outJson(response, null,false,getResString("err.exist", this.getResString("manager.name")));
 			    return;
 		    }
