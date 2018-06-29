@@ -49,7 +49,7 @@
 		            upload_url: "${basePath}/file/upload.do",
 		            post_params:{"uploadPath":"${path}","uploadFloderPath":"${uploadFloderPath}","isRename":"true","maxSize":"${maxSize}","allowedFile":"${filetype}","allowedFile":""},
 		            file_size_limit: ${maxSize?default("1")}*1024,
-		            file_types: "${filetype?default("*.jpg;*.png;*.gif;*.bmp;*.jpeg;*.less")}",
+		            file_types: "${filetype?default("*.jpg;*.png;*.gif;*.bmp;*.jpeg")}",
 		            file_types_description: "Image files",
 		            file_upload_limit: ${size?default("5")},
 		            flash_url: "${basePath}/static/plugins/jquery.swfupload/1.0.0/swfupload.swf",
