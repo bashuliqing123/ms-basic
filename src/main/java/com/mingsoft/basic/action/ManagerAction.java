@@ -288,13 +288,17 @@ public class ManagerAction extends com.mingsoft.basic.action.BaseAction{
 	@ResponseBody
 	@RequiresPermissions("manager:update")
 	public void update(@ModelAttribute ManagerEntity manager, HttpServletResponse response,
-			HttpServletRequest request) {
+			HttpServletRequest request) {	
 		ManagerEntity newManager = new ManagerEntity();
 		newManager.setManagerName(manager.getManagerName());
+		
+		ManagerEntity _manager = (ManagerEntity) managerBiz.getEntity(manager.getManagerId());
 		//用户名是否存在
-		if(managerBiz.getEntity(newManager) != null){
-			this.outJson(response, null,false,getResString("err.exist", this.getResString("manager.name")));
-			return;
+		if(!manager.getManagerName() .equals( _manager.getManagerName())){
+		    if(managerBiz.getEntity(newManager) != null ){
+			    this.outJson(response, null,false,getResString("err.exist", this.getResString("manager.name")));
+			    return;
+		    }
 		}
 		//验证管理员用户名的值是否合法			
 		if(StringUtil.isBlank(manager.getManagerName())){
