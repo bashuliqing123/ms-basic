@@ -180,7 +180,7 @@
 	<select id="queryByAppIdAndModelId"  resultMap="resultMap" >
 		select
 		<include refid="column_list"/>
-		from basic_column co left join category ca on ca.category_id=co.column_category_id where ca.category_appId=#{appId} and ca.category_modelId=#{modelId}
+		from basic_column co left join category ca on ca.category_id=co.column_category_id where ca.category_appId=#{appId} and ca.category_modelId=#{modelId} and ca.del=0
 	</select>
 	
 </mapper>
