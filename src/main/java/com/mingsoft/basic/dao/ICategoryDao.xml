@@ -147,10 +147,8 @@
 	<delete id="delete" parameterType="int">
 		update category set del = 1
 		where category_id in
-		<foreach collection="ids" item="id" open="(" separator=","
-			close=")">
-			#{id}
-		</foreach>
+		<foreach collection="ids" item="item" index="index" open="("
+				separator="," close=")">#{item}</foreach>
 	</delete>
 	<!-- 删除类别结束 -->
 

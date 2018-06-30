@@ -88,15 +88,16 @@ public class CategoryBizImpl extends BaseBizImpl implements ICategoryBiz {
 		if(category != null){
 			//删除生成的html文件（递归方法获得文件路径）
 			FileUtil.delFolders(BaseUtil.getRealPath(getGenerateFilePath(categoryId, categoryId+"")));
-			categoryDao.deleteEntity(categoryId);
-			deleteEntity(categoryId);
 			category.setCategoryParentId(null);
 			List<CategoryEntity> childrenList = categoryDao.queryChildren(category);
+			int[] ids = new int[childrenList.size()];
 			for(int i = 0; i < childrenList.size(); i++){
 				//删除子类
-				int childrenId = childrenList.get(i).getCategoryId();
-				deleteEntity(childrenId);
+				ids[i] = childrenList.get(i).getCategoryId();
 			}
+			categoryDao.delete(ids);
+			categoryDao.deleteEntity(categoryId);
+			deleteEntity(categoryId);
 		}
 	}
 	/**

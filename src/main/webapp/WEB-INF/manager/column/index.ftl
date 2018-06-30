@@ -137,6 +137,7 @@
 		for(var i=0;i<rows.length;i++){
 			ids[i] = rows[i].categoryId;
 		}
+		ids.reverse();
 		$.ajax({
 			type: "post",
 			url: "${managerPath}/${model?default('')}/column/delete.do?ids="+ids,
